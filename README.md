@@ -32,7 +32,7 @@ npm run dev
 
 L'application est accessible sur `http://localhost:5173`.
 
-> Le back-end Django doit tourner sur `http://localhost:8000` (voir [`pause_empathique/`](../pause_empathique/)).
+> Le back-end Django doit tourner sur `http://localhost:8000` (voir [repo back-end](https://github.com/CamilleFasani/Pause_Empathique)).
 
 ## Scripts disponibles
 
