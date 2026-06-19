@@ -1,1 +1,37 @@
 @import 'tailwindcss';
+
+/* ==========================================================================
+   CHARTE GRAPHIQUE 
+   ========================================================================== */
+
+@theme {
+  /* --- Couleurs principales  --------------------------------------- */
+  --color-brand-primary: #ffb300;
+  --color-brand-primary-hover: #ffdc7d;
+
+  /* --- Fonds --------------------------------------------------------------- */
+  --color-bg-page: #fff4d5;
+  --color-bg-empty-your-bag: #ffd151;
+  --color-bg-observation: #ffdc7d;
+  --color-bg-feelings: #ffe8aa;
+  --color-bg-needs: #fff4d5;
+  --color-bg-card: #ffffff;
+  --color-bg-circle-white: #ffffff;
+  --color-bg-circle-beige: #fff4d5;
+
+  /* --- Texte --------------------------------------------------------------- */
+  --color-black: #1a1300;
+
+  /* --- Typographie --------------------------------------------------------- */
+  --font-body: 'Manrope', sans-serif;
+  --font-logo: 'Fraunces', serif;
+
+  /* --- Rayons de bordure --------------------------------------------------- */
+  --radius-btn: 10px;
+  --radius-card: 15px;
+
+  /* --- États (optionnel, à compléter plus tard) ---------------------------- */
+  /* --color-success:       ; */
+  /* --color-error:         ; */
+  /* --color-warning:       ; */
+}
