@@ -1,5 +1,5 @@
-<script setup lang="ts"></script>
-
 <template>
-  <div>Pause Empathique</div>
+  <RouterView />
 </template>
+
+<script setup lang="ts"></script>
