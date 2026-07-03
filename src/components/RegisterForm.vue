@@ -180,8 +180,8 @@ const validateForm = (): boolean => {
 
   if (!form.password) {
     fieldErrors.password = 'Le mot de passe est obligatoire.'
-  } else if (form.password.length < 12) {
-    fieldErrors.password = 'Choisis au moins 12 caractères.'
+  } else if (form.password.length < 8) {
+    fieldErrors.password = 'Choisis au moins 8 caractères.'
   } else if (/^\d+$/.test(form.password)) {
     fieldErrors.password = 'Le mot de passe ne doit pas être entièrement numérique.'
   }

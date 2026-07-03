@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <AppLayout :bg-image="isLogin ? loginBg : registerBg">
     <div class="flex flex-col justify-between">
       <div class="flex py-10 text-sm">
         <button
@@ -31,6 +31,8 @@ import { computed } from 'vue'
 import AppLayout from '../layouts/AppLayout.vue'
 import LoginForm from '../components/LoginForm.vue'
 import RegisterForm from '../components/RegisterForm.vue'
+import loginBg from '../assets/login-bg.svg'
+import registerBg from '../assets/register-bg.svg'
 
 const route = useRoute()
 const router = useRouter()
