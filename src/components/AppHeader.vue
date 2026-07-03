@@ -7,7 +7,7 @@
       :src="logoSrc"
       alt="Logo Pause Empathique"
       class="h-12 w-auto"
-      @click="router.push({ name: 'home' })"
+      @click="router.push({ name: 'welcome' })"
     />
     <button>
       <img :src="UserIcon" alt="Mon compte" class="h-8 w-auto" />
