@@ -1,6 +1,8 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html : SVG statique issu de nos assets, pas de données utilisateur -->
-  <div ref="container" class="empathic-path" v-html="svgContent" />
+  <div ref="container" class="empathic-path">
+    <!-- eslint-disable-next-line vue/no-v-html : SVG statique issu de nos assets, pas de données utilisateur -->
+    <div v-html="svgContent" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -23,17 +25,36 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Contraint le SVG pour qu'il ne dépasse pas l'espace disponible */
-.empathic-path :deep(svg) {
-  max-height: 70vh;
-  width: auto;
+.empathic-path {
+  position: relative;
+  width: 303px;
+  height: 415px;
+  flex-shrink: 0;
+}
+
+.empathic-path > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 303px;
+  height: 844px;
+  pointer-events: none;
+}
+
+/* Le SVG dépasse son conteneur pour continuer sous les boutons. */
+.empathic-path > div :deep(svg) {
+  display: block;
+  width: 303px;
+  height: 844px;
+  max-height: none;
+  overflow: visible;
 }
 
 /* --- Route : se dessine de haut en bas ------------------------------------ */
 .empathic-path :deep(#route) {
   stroke-dasharray: var(--path-length, 2000px);
   stroke-dashoffset: var(--path-length, 2000px);
-  animation: draw-path 5s ease-in-out forwards;
+  animation: draw-path 7s ease-in-out forwards;
 }
 
 /* --- Cercles : invisibles au départ, apparaissent quand le chemin arrive -- */
