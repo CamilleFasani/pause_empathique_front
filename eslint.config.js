@@ -21,4 +21,12 @@ export default [
   {
     ignores: ['dist/', 'node_modules/'],
   },
+  {
+    // TypeScript gère déjà la vérification des variables non définies.
+    // no-undef ne connaît pas les types DOM (HTMLDivElement, etc.) sans config browser.
+    files: ['**/*.ts', '**/*.vue'],
+    rules: {
+      'no-undef': 'off',
+    },
+  },
 ]

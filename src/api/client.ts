@@ -1,12 +1,12 @@
 import axios from 'axios'
 
-const baseURL = import.meta.env.VITE_API_URL
-if (!baseURL) {
+const apiRootUrl = import.meta.env.VITE_API_URL
+if (!apiRootUrl) {
   throw new Error('VITE_API_URL is not defined')
 }
 
 export const apiClient = axios.create({
-  baseURL,
+  baseURL: `${apiRootUrl.replace(/\/$/, '')}/api/v1`,
   headers: {
     'Content-Type': 'application/json',
   },
