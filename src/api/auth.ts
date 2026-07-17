@@ -19,21 +19,27 @@ export interface AccessTokenResponse {
 }
 
 export const registerUser = async (payload: RegisterPayload): Promise<void> => {
-  await apiClient.post('/auth/register/', payload)
+  await apiClient.post('/auth/register/', payload, { skipAuthRefresh: true })
 }
 
 export const loginUser = async (payload: LoginPayload): Promise<AccessTokenResponse> => {
-  const response = await apiClient.post<AccessTokenResponse>('/auth/token/', payload)
+  const response = await apiClient.post<AccessTokenResponse>('/auth/token/', payload, {
+    skipAuthRefresh: true,
+  })
 
   return response.data
 }
 
 export const refreshAccessToken = async (): Promise<AccessTokenResponse> => {
-  const response = await apiClient.post<AccessTokenResponse>('/auth/token/refresh/')
+  const response = await apiClient.post<AccessTokenResponse>(
+    '/auth/token/refresh/',
+    undefined,
+    { skipAuthRefresh: true },
+  )
 
   return response.data
 }
 
 export const logoutUser = async (): Promise<void> => {
-  await apiClient.post('/auth/token/blacklist/')
+  await apiClient.post('/auth/token/blacklist/', undefined, { skipAuthRefresh: true })
 }
