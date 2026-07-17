@@ -7,6 +7,7 @@ if (!apiRootUrl) {
 
 export const apiClient = axios.create({
   baseURL: `${apiRootUrl.replace(/\/$/, '')}/api/v1`,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
