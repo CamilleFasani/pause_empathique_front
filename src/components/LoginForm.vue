@@ -56,7 +56,7 @@
       {{ formMessage }}
     </p>
   </form>
-  <a href="#" class="text-sm hover:italic self-center">Mot de passe oublié ?</a>
+  <a href="#" class="text-sm hover:italic self-center" @click.prevent>Mot de passe oublié ?</a>
 </template>
 <script lang="ts" setup>
 import { AxiosError } from 'axios'

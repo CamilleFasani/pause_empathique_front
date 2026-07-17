@@ -42,7 +42,7 @@
         name="password"
         autocomplete="new-password"
         required
-        minlength="12"
+        minlength="8"
         :aria-invalid="Boolean(fieldErrors.password)"
         aria-describedby="password-error"
         class="w-full mb-6 border-b border-black"
@@ -72,7 +72,7 @@
         name="confirm-password"
         autocomplete="new-password"
         required
-        minlength="12"
+        minlength="8"
         :aria-invalid="Boolean(fieldErrors.passwordConfirmation)"
         aria-describedby="password-confirmation-error"
         class="w-full border-b border-black mb-6"
@@ -88,6 +88,7 @@
 
     <p class="mb-2">Je préfère lire les textes au :</p>
     <div class="flex self-center items-center gap-3 mt-4">
+      <span id="gender-label" class="sr-only">Genre grammatical préféré</span>
       <span :class="isFeminine ? 'font-semibold' : ''">Féminin</span>
 
       <input
@@ -97,11 +98,13 @@
         true-value="F"
         false-value="M"
         name="gender-preference"
+        role="switch"
+        aria-labelledby="gender-label"
         class="sr-only peer"
       />
       <label
         for="gender-preference"
-        class="relative w-12 h-6 bg-white border border-black rounded-full cursor-pointer after:content-[''] after:absolute after:top-0.75 after:left-1 after:bg-black after:rounded-full after:w-4 after:h-4 after:transition-transform after:translate-x-6 peer-checked:after:translate-x-0"
+        class="relative w-12 h-6 bg-white border border-black rounded-full cursor-pointer after:content-[''] after:absolute after:top-0.75 after:left-1 after:bg-black after:rounded-full after:w-4 after:h-4 after:transition-transform after:translate-x-6 peer-checked:after:translate-x-0 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black"
       ></label>
 
       <span :class="isFeminine ? '' : 'font-semibold'">Masculin</span>
