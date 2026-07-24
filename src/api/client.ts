@@ -1,3 +1,9 @@
+/**
+ * Configure le client HTTP commun à toute l'application.
+ * Gère l'URL de l'API, l'envoi des cookies, l'ajout de l'access token,
+ * son renouvellement automatique et le rejeu des requêtes en échec.
+ */
+
 import axios, { type AxiosError } from 'axios'
 
 declare module 'axios' {

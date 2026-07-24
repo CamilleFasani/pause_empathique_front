@@ -1,3 +1,9 @@
+/**
+ * Déclare les routes de l'application et contrôle la navigation.
+ * Restaure la session avant la navigation, protège les routes privées
+ * et redirige selon l'état d'authentification.
+ */
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '../stores/auth'

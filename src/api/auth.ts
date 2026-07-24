@@ -1,3 +1,9 @@
+/**
+ * Centralise les appels à l'API d'authentification.
+ * Définit leurs données d'entrée et de sortie et expose les opérations
+ * d'inscription, de connexion, de renouvellement de session et de déconnexion.
+ */
+
 import { apiClient } from './client'
 
 export type Gender = 'F' | 'M'
@@ -31,11 +37,9 @@ export const loginUser = async (payload: LoginPayload): Promise<AccessTokenRespo
 }
 
 export const refreshAccessToken = async (): Promise<AccessTokenResponse> => {
-  const response = await apiClient.post<AccessTokenResponse>(
-    '/auth/token/refresh/',
-    undefined,
-    { skipAuthRefresh: true },
-  )
+  const response = await apiClient.post<AccessTokenResponse>('/auth/token/refresh/', undefined, {
+    skipAuthRefresh: true,
+  })
 
   return response.data
 }

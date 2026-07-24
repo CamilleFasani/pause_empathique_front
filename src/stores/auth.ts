@@ -1,3 +1,8 @@
+/**
+ * Conserve l'état d'authentification partagé par l'application.
+ * Orchestre l'inscription, la connexion, la restauration de session
+ * et la déconnexion, puis relie cet état au client HTTP.
+ */
 import { defineStore } from 'pinia'
 
 import {

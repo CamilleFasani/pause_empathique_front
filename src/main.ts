@@ -1,3 +1,8 @@
+/**
+ * Initialise l'application Vue avec le store Pinia et le routeur,
+ * puis la monte dans la page.
+ */
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import './style.css'
