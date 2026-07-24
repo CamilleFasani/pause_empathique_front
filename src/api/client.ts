@@ -78,8 +78,7 @@ export const configureAuthInterceptors = ({
             refreshPromise = null
           })
 
-        const accessToken = await refreshPromise
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        await refreshPromise
 
         return apiClient(originalRequest)
       } catch (refreshError) {
