@@ -9,7 +9,7 @@ import {
   type LoginPayload,
   type RegisterPayload,
 } from '../api/auth'
-import { apiClient, configureAuthInterceptors } from '../api/client'
+import { configureAuthInterceptors } from '../api/client'
 
 export type { Gender, LoginPayload, RegisterPayload }
 
@@ -66,13 +66,11 @@ export const useAuthStore = defineStore('auth', {
     setSession(accessToken: string) {
       this.accessToken = accessToken
       this.isAuthReady = true
-      apiClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`
     },
     clearSession() {
       this.user = null
       this.accessToken = null
       this.isAuthReady = true
-      delete apiClient.defaults.headers.common.Authorization
     },
     async initializeSession() {
       this.configureClientAuth()
@@ -93,7 +91,6 @@ export const useAuthStore = defineStore('auth', {
         } catch {
           this.clearSession()
         } finally {
-          this.isAuthReady = true
           initializeSessionPromise = null
         }
       })()
