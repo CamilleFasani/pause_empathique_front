@@ -1,8 +1,22 @@
+/**
+ * Conserve l'état d'authentification partagé par l'application.
+ * Orchestre l'inscription, la connexion, la restauration de session
+ * et la déconnexion, puis relie cet état au client HTTP.
+ */
 import { defineStore } from 'pinia'
 
-import { apiClient } from '../api/client'
+import {
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  registerUser,
+  type Gender,
+  type LoginPayload,
+  type RegisterPayload,
+} from '../api/auth'
+import { configureAuthInterceptors } from '../api/client'
 
-export type Gender = 'F' | 'M'
+export type { Gender, LoginPayload, RegisterPayload }
 
 interface User {
   id: number
@@ -11,89 +25,88 @@ interface User {
   gender: Gender
 }
 
-export interface RegisterPayload {
-  firstname: string
-  email: string
-  password: string
-  gender: Gender
-}
-
-export interface LoginPayload {
-  email: string
-  password: string
-}
-
-interface TokenResponse {
-  access: string
-  refresh: string
-}
-
-interface RefreshTokenResponse {
-  access: string
-}
-
-const REFRESH_TOKEN_STORAGE_KEY = 'pause-empathique.refresh-token'
+let areAuthInterceptorsConfigured = false
+let initializeSessionPromise: Promise<void> | null = null
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as User | null,
     accessToken: null as string | null,
-    refreshToken: null as string | null,
+    isAuthReady: false,
   }),
   getters: {
     isAuthenticated: (state) => state.accessToken !== null,
   },
   actions: {
+    configureClientAuth() {
+      if (areAuthInterceptorsConfigured) {
+        return
+      }
+
+      configureAuthInterceptors({
+        getAccessToken: () => this.accessToken,
+        onAccessTokenRefreshed: (accessToken) => {
+          this.setSession(accessToken)
+        },
+        onAuthFailure: () => {
+          this.clearSession()
+        },
+      })
+      areAuthInterceptorsConfigured = true
+    },
     async register(payload: RegisterPayload) {
-      await apiClient.post('/auth/register/', payload)
+      this.configureClientAuth()
+      await registerUser(payload)
       await this.login({
         email: payload.email,
         password: payload.password,
       })
     },
     async login(payload: LoginPayload) {
-      const response = await apiClient.post<TokenResponse>('/auth/token/', payload)
+      this.configureClientAuth()
+      const response = await loginUser(payload)
 
-      this.setSession(response.data.access, response.data.refresh)
+      this.setSession(response.access)
     },
-    setSession(accessToken: string, refreshToken: string) {
+    setSession(accessToken: string) {
       this.accessToken = accessToken
-      this.refreshToken = refreshToken
-      localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken)
-      apiClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+      this.isAuthReady = true
     },
     clearSession() {
       this.user = null
       this.accessToken = null
-      this.refreshToken = null
-      localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY)
-      delete apiClient.defaults.headers.common.Authorization
+      this.isAuthReady = true
     },
     async initializeSession() {
-      const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY)
+      this.configureClientAuth()
 
-      if (!storedRefreshToken) {
-        this.clearSession()
+      if (this.isAuthReady) {
         return
       }
 
-      try {
-        const response = await apiClient.post<RefreshTokenResponse>('/auth/token/refresh/', {
-          refresh: storedRefreshToken,
-        })
-
-        this.setSession(response.data.access, storedRefreshToken)
-      } catch {
-        this.clearSession()
+      if (initializeSessionPromise) {
+        return initializeSessionPromise
       }
+
+      initializeSessionPromise = (async () => {
+        try {
+          const response = await refreshAccessToken()
+
+          this.setSession(response.access)
+        } catch {
+          this.clearSession()
+        } finally {
+          initializeSessionPromise = null
+        }
+      })()
+
+      return initializeSessionPromise
     },
     async logout() {
-      const refreshToken = this.refreshToken
+      this.configureClientAuth()
 
       try {
-        if (refreshToken) {
-          await apiClient.post('/auth/token/blacklist/', { refresh: refreshToken })
-        }
+        await logoutUser()
       } catch (error) {
         console.error('Échec de la blacklist du refresh token :', error)
       } finally {

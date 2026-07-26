@@ -32,7 +32,7 @@ npm run dev
 
 L'application est accessible sur `http://localhost:5173`.
 
-> Le back-end Django doit tourner sur `http://localhost:8000` (voir [repo back-end](https://github.com/CamilleFasani/Pause_Empathique)).
+> Le back-end Django doit tourner sur `http://localhost:8000` (voir [repo back-end](https://github.com/CamilleFasani/Pause_Empathique)). En local, les appels `/api/*` passent par le proxy Vite pour que les cookies `HttpOnly` de refresh restent sur le même origin que la SPA.
 
 ## Scripts disponibles
 
@@ -47,6 +47,7 @@ L'application est accessible sur `http://localhost:5173`.
 
 ## Variables d'environnement
 
-| Variable       | Description                   | Exemple                 |
-| -------------- | ----------------------------- | ----------------------- |
-| `VITE_API_URL` | URL de base de l'API back-end | `http://localhost:8000` |
+| Variable                | Description                                        | Exemple                 |
+| ----------------------- | -------------------------------------------------- | ----------------------- |
+| `VITE_API_URL`          | URL appelée par le navigateur                      | `/api/v1`               |
+| `VITE_API_PROXY_TARGET` | Cible Django du proxy Vite en développement local  | `http://localhost:8000` |

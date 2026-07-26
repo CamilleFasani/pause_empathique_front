@@ -1,3 +1,9 @@
+/**
+ * Déclare les routes de l'application et contrôle la navigation.
+ * Restaure la session avant la navigation, protège les routes privées
+ * et redirige selon l'état d'authentification.
+ */
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '../stores/auth'
@@ -19,11 +25,19 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
+
+  if (!authStore.isAuthReady) {
+    await authStore.initializeSession()
+  }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return { name: 'login' }
+  }
+
+  if ((to.name === 'login' || to.name === 'register') && authStore.isAuthenticated) {
+    return { name: 'home' }
   }
 })
 

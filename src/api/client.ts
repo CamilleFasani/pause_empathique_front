@@ -1,13 +1,113 @@
-import axios from 'axios'
+/**
+ * Configure le client HTTP commun à toute l'application.
+ * Gère l'URL de l'API, l'envoi des cookies, l'ajout de l'access token,
+ * son renouvellement automatique et le rejeu des requêtes en échec.
+ */
 
-const apiRootUrl = import.meta.env.VITE_API_URL
-if (!apiRootUrl) {
-  throw new Error('VITE_API_URL is not defined')
+import axios, { type AxiosError } from 'axios'
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipAuthRefresh?: boolean
+    _retry?: boolean
+  }
+}
+
+const versionedApiPath = '/api/v1'
+
+const resolveApiBaseUrl = (apiRootUrl?: string) => {
+  const configuredUrl = apiRootUrl?.trim()
+
+  if (!configuredUrl) {
+    return versionedApiPath
+  }
+
+  const normalizedUrl = configuredUrl.replace(/\/$/, '')
+
+  if (normalizedUrl.startsWith('/')) {
+    return normalizedUrl
+  }
+
+  if (normalizedUrl.endsWith(versionedApiPath)) {
+    return normalizedUrl
+  }
+
+  return `${normalizedUrl}${versionedApiPath}`
 }
 
 export const apiClient = axios.create({
-  baseURL: `${apiRootUrl.replace(/\/$/, '')}/api/v1`,
+  baseURL: resolveApiBaseUrl(import.meta.env.VITE_API_URL),
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 })
+
+interface AuthInterceptorOptions {
+  getAccessToken: () => string | null
+  onAccessTokenRefreshed: (accessToken: string) => void
+  onAuthFailure: () => void
+}
+
+interface AccessTokenResponse {
+  access: string
+}
+
+let refreshPromise: Promise<string> | null = null
+
+export const configureAuthInterceptors = ({
+  getAccessToken,
+  onAccessTokenRefreshed,
+  onAuthFailure,
+}: AuthInterceptorOptions) => {
+  apiClient.interceptors.request.use((config) => {
+    const accessToken = getAccessToken()
+
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
+    }
+
+    return config
+  })
+
+  apiClient.interceptors.response.use(
+    (response) => response,
+    async (error: AxiosError) => {
+      const originalRequest = error.config
+
+      if (
+        error.response?.status !== 401 ||
+        !originalRequest ||
+        originalRequest._retry ||
+        originalRequest.skipAuthRefresh
+      ) {
+        throw error
+      }
+
+      originalRequest._retry = true
+
+      try {
+        refreshPromise ??= apiClient
+          .post<AccessTokenResponse>('/auth/token/refresh/', undefined, {
+            skipAuthRefresh: true,
+          })
+          .then((response) => {
+            const accessToken = response.data.access
+            onAccessTokenRefreshed(accessToken)
+
+            return accessToken
+          })
+          .finally(() => {
+            refreshPromise = null
+          })
+
+        await refreshPromise
+
+        return apiClient(originalRequest)
+      } catch (refreshError) {
+        onAuthFailure()
+        throw refreshError
+      }
+    },
+  )
+}

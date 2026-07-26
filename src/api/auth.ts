@@ -1,0 +1,49 @@
+/**
+ * Centralise les appels à l'API d'authentification.
+ * Définit leurs données d'entrée et de sortie et expose les opérations
+ * d'inscription, de connexion, de renouvellement de session et de déconnexion.
+ */
+
+import { apiClient } from './client'
+
+export type Gender = 'F' | 'M'
+
+export interface RegisterPayload {
+  firstname: string
+  email: string
+  password: string
+  gender: Gender
+}
+
+export interface LoginPayload {
+  email: string
+  password: string
+}
+
+export interface AccessTokenResponse {
+  access: string
+}
+
+export const registerUser = async (payload: RegisterPayload): Promise<void> => {
+  await apiClient.post('/auth/register/', payload, { skipAuthRefresh: true })
+}
+
+export const loginUser = async (payload: LoginPayload): Promise<AccessTokenResponse> => {
+  const response = await apiClient.post<AccessTokenResponse>('/auth/token/', payload, {
+    skipAuthRefresh: true,
+  })
+
+  return response.data
+}
+
+export const refreshAccessToken = async (): Promise<AccessTokenResponse> => {
+  const response = await apiClient.post<AccessTokenResponse>('/auth/token/refresh/', undefined, {
+    skipAuthRefresh: true,
+  })
+
+  return response.data
+}
+
+export const logoutUser = async (): Promise<void> => {
+  await apiClient.post('/auth/token/blacklist/', undefined, { skipAuthRefresh: true })
+}
