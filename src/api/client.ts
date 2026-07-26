@@ -13,13 +13,30 @@ declare module 'axios' {
   }
 }
 
-const apiRootUrl = import.meta.env.VITE_API_URL
-if (!apiRootUrl) {
-  throw new Error('VITE_API_URL is not defined')
+const versionedApiPath = '/api/v1'
+
+const resolveApiBaseUrl = (apiRootUrl?: string) => {
+  const configuredUrl = apiRootUrl?.trim()
+
+  if (!configuredUrl) {
+    return versionedApiPath
+  }
+
+  const normalizedUrl = configuredUrl.replace(/\/$/, '')
+
+  if (normalizedUrl.startsWith('/')) {
+    return normalizedUrl
+  }
+
+  if (normalizedUrl.endsWith(versionedApiPath)) {
+    return normalizedUrl
+  }
+
+  return `${normalizedUrl}${versionedApiPath}`
 }
 
 export const apiClient = axios.create({
-  baseURL: `${apiRootUrl.replace(/\/$/, '')}/api/v1`,
+  baseURL: resolveApiBaseUrl(import.meta.env.VITE_API_URL),
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
