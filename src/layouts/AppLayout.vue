@@ -1,6 +1,14 @@
 <template>
-  <div class="flex w-full min-h-dvh flex-col font-body bg-bg-page" :style="backgroundStyle">
-    <AppHeader v-if="route.name !== 'welcome'" class="lg:hidden" />
+  <div
+    class="relative flex min-h-dvh w-full flex-col font-body"
+    :class="backgroundClass ?? 'bg-bg-page'"
+    :style="backgroundStyle"
+  >
+    <AppHeader
+      v-if="route.name !== 'welcome'"
+      class="z-10 w-full lg:hidden"
+      :overlay="overlayHeader"
+    />
     <img
       v-if="route.name !== 'welcome'"
       :src="LogoDesktop"
@@ -17,7 +25,7 @@
       <AppSidebar class="hidden lg:flex" />
     </div>
 
-    <AppFooter />
+    <AppFooter v-if="showFooter" />
   </div>
 </template>
 
@@ -31,9 +39,20 @@ import AppFooter from '../components/AppFooter.vue'
 import LogoDesktop from '../assets/logo-name.svg'
 
 const route = useRoute()
-const props = defineProps<{
-  bgImage?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    bgImage?: string
+    backgroundClass?: string
+    overlayHeader?: boolean
+    showFooter?: boolean
+  }>(),
+  {
+    bgImage: undefined,
+    backgroundClass: undefined,
+    overlayHeader: false,
+    showFooter: true,
+  },
+)
 
 const backgroundStyle = computed(() =>
   props.bgImage
