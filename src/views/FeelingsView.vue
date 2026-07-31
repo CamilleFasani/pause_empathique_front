@@ -5,16 +5,7 @@
 
       <div class="mt-3">
         <h1 class="font-semibold">Sentiments</h1>
-        <img
-          :src="InfoIcon"
-          alt="Informations"
-          class="h-6 w-auto mt-2"
-          @click="showIntroText = !showIntroText"
-        />
-        <div v-if="showIntroText">
-          <p class="mt-5">Cette deuxième étape t'invite à décrire factuellement ce qui se passe.</p>
-          <p class="mt-5">Prends le temps de trouver tes mots. Tu peux aussi faire un vocal.</p>
-        </div>
+        <p class="mt-5">Je me sens...</p>
       </div>
 
       <label for="bag-content" class="sr-only">Ce que tu observes</label>
@@ -52,10 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import AppLayout from '../layouts/AppLayout.vue'
 import PracticeStepHeader from '../components/PracticeStepHeader.vue'
 import MicroIcon from '../assets/microphone.svg'
-import InfoIcon from '../assets/info-circle.svg'
-const showIntroText = ref(false)
 </script>
