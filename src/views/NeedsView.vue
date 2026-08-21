@@ -1,7 +1,7 @@
 <template>
   <AppLayout background-class="bg-bg-needs" overlay-header :show-footer="false">
     <section class="relative flex min-h-dvh w-full max-w-md flex-col px-5 pt-2 pb-8">
-      <PracticeStepHeader :current-step="3" />
+      <PracticeStepHeader :current-step="4" />
 
       <div class="mt-3">
         <h1 class="font-semibold">Besoins</h1>
