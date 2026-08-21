@@ -25,6 +25,7 @@
       <label for="bag-content" class="sr-only">Ce que tu souhaites déposer</label>
       <textarea
         id="bag-content"
+        v-model="draft.emptyYourBag"
         name="bag-content"
         class="mt-6 h-[clamp(16rem,38dvh,22.5rem)] w-full resize-none rounded-card bg-bg-card p-4 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-black"
       />
@@ -58,9 +59,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import AppLayout from '../layouts/AppLayout.vue'
 import PracticeStepHeader from '../components/PracticeStepHeader.vue'
 import MicroIcon from '../assets/microphone.svg'
 import InfoIcon from '../assets/info-circle.svg'
+import { usePracticeStore } from '../stores/practice'
+
+const practiceStore = usePracticeStore()
+const { draft } = storeToRefs(practiceStore)
 const showIntroText = ref(false)
 </script>
