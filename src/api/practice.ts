@@ -2,7 +2,7 @@ import { apiClient } from './client'
 
 export interface Feeling {
   id: number
-  feeling_family: string
+  family: string
   names: {
     f: string
     m: string
@@ -11,7 +11,7 @@ export interface Feeling {
 
 export interface Need {
   id: number
-  need_family: string
+  family: string
   name: string
 }
 
