@@ -6,6 +6,7 @@
 import { defineStore } from 'pinia'
 
 import {
+  getCurrentUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -13,24 +14,18 @@ import {
   type Gender,
   type LoginPayload,
   type RegisterPayload,
+  type UserProfile,
 } from '../api/auth'
 import { configureAuthInterceptors } from '../api/client'
 
 export type { Gender, LoginPayload, RegisterPayload }
-
-interface User {
-  id: number
-  email: string
-  firstname: string
-  gender: Gender
-}
 
 let areAuthInterceptorsConfigured = false
 let initializeSessionPromise: Promise<void> | null = null
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as User | null,
+    user: null as UserProfile | null,
     accessToken: null as string | null,
     isAuthReady: false,
   }),
@@ -46,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
       configureAuthInterceptors({
         getAccessToken: () => this.accessToken,
         onAccessTokenRefreshed: (accessToken) => {
-          this.setSession(accessToken)
+          this.setAccessToken(accessToken)
         },
         onAuthFailure: () => {
           this.clearSession()
@@ -66,11 +61,15 @@ export const useAuthStore = defineStore('auth', {
       this.configureClientAuth()
       const response = await loginUser(payload)
 
-      this.setSession(response.access)
+      await this.setSession(response.access)
     },
-    setSession(accessToken: string) {
+    setAccessToken(accessToken: string) {
       this.accessToken = accessToken
       this.isAuthReady = true
+    },
+    async setSession(accessToken: string) {
+      this.setAccessToken(accessToken)
+      this.user = await getCurrentUser()
     },
     clearSession() {
       this.user = null
@@ -92,7 +91,7 @@ export const useAuthStore = defineStore('auth', {
         try {
           const response = await refreshAccessToken()
 
-          this.setSession(response.access)
+          await this.setSession(response.access)
         } catch {
           this.clearSession()
         } finally {

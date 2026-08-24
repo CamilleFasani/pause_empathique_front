@@ -121,6 +121,7 @@ import PracticeStepHeader from '../components/PracticeStepHeader.vue'
 import PracticeFamilyButton from '../components/PracticeFamilyButton.vue'
 import PracticeSelectionCard from '../components/PracticeSelectionCard.vue'
 import { getFeelings, type Feeling } from '../api/practice'
+import { useGender } from '../composables/useGender'
 import { usePracticeStore } from '../stores/practice'
 
 interface FeelingFamily {
@@ -131,6 +132,7 @@ interface FeelingFamily {
 const router = useRouter()
 const practiceStore = usePracticeStore()
 const { draft } = storeToRefs(practiceStore)
+const { feelingNameGender } = useGender()
 const feelings = ref<Feeling[]>([])
 const isLoading = ref(false)
 const loadingError = ref<string | null>(null)
@@ -164,7 +166,7 @@ const selectedFeelings = computed(() =>
 
 const canContinue = computed(() => draft.value.feelingIds.length > 0)
 
-const getFeelingLabel = (feeling: Feeling) => feeling.names.f
+const getFeelingLabel = (feeling: Feeling) => feeling.names[feelingNameGender.value]
 
 const isFeelingSelected = (id: number) => draft.value.feelingIds.includes(id)
 
