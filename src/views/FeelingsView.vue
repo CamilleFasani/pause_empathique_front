@@ -39,13 +39,13 @@
       <nav class="mt-8 flex items-center justify-between" aria-label="Navigation de la pratique">
         <RouterLink
           :to="{ name: 'observation' }"
-          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
+          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >
           Précédent
         </RouterLink>
         <button
           type="button"
-          class="rounded-btn px-6 py-3 text-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-50"
+          class="rounded-btn px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-50"
           :class="canContinue ? 'bg-brand-primary' : 'bg-white'"
           :disabled="!canContinue"
           @click="goToNeeds"
@@ -83,7 +83,7 @@
               v-for="feeling in activeFamilyFeelings"
               :key="feeling.id"
               type="button"
-              class="w-full rounded-btn px-4 py-3 text-sm font-semibold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-black"
+              class="w-full rounded-btn px-4 py-3 text-sm font-semibold focus-visible:outline-1 focus-visible:outline-black"
               :class="
                 isFeelingSelected(feeling.id)
                   ? 'bg-brand-primary text-black'
@@ -101,7 +101,7 @@
 
           <button
             type="button"
-            class="mt-6 w-full rounded-btn bg-brand-primary px-4 py-3 text-sm font-semibold text-black focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-black"
+            class="mt-6 w-full rounded-btn bg-brand-primary px-4 py-3 text-sm font-semibold text-black focus-visible:outline-1 focus-visible:outline-black"
             @click="closeFamily"
           >
             Valider

@@ -22,13 +22,13 @@
         id="observation-content"
         v-model="draft.observation"
         name="observation-content"
-        class="mt-6 h-[clamp(16rem,38dvh,22.5rem)] w-full resize-none rounded-card bg-bg-card p-4 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-black"
+        class="mt-6 h-[clamp(16rem,38dvh,22.5rem)] w-full resize-none rounded-card bg-bg-card p-4 focus-visible:outline-1 focus-visible:outline-black"
       />
 
       <button
         type="button"
         aria-label="Dicter le contenu"
-        class="mx-auto mt-4 flex size-14 shrink-0 items-center justify-center rounded-full bg-white focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
+        class="mx-auto mt-4 flex size-14 shrink-0 items-center justify-center rounded-full bg-white focus-visible:outline-1 focus-visible:outline-black"
       >
         <img :src="MicroIcon" alt="Enregistrer à la voix" class="h-8 w-auto" />
       </button>
@@ -36,14 +36,14 @@
       <nav class="mt-8 flex items-center justify-between" aria-label="Navigation de la pratique">
         <RouterLink
           :to="{ name: 'empty-your-bag' }"
-          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
+          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >
           Précédent
         </RouterLink>
         <RouterLink
           :to="{ name: 'feelings' }"
           type="button"
-          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
+          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >
           Étape suivante
         </RouterLink>
