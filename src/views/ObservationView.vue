@@ -8,7 +8,7 @@
         <img
           :src="InfoIcon"
           alt="Informations"
-          class="h-8 w-auto mt-2"
+          class="h-6 w-auto mt-2"
           @click="showIntroText = !showIntroText"
         />
         <div v-if="showIntroText">

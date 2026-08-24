@@ -76,6 +76,12 @@ export const usePracticeStore = defineStore('practice', {
       this.resumeAfterAuthentication = true
     },
 
+    continueAuthenticated() {
+      this.mode = 'authenticated'
+      this.error = null
+      this.resumeAfterAuthentication = false
+    },
+
     toPausePayload(): PauseCreatePayload {
       return {
         title: this.draft.title.trim() || undefined,

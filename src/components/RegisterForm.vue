@@ -134,12 +134,14 @@ import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useAuthStore, type Gender, type RegisterPayload } from '../stores/auth'
+import { usePracticeStore } from '../stores/practice'
 
 import eyeOpenIcon from '../assets/eye-solid.svg'
 import eyeClosedIcon from '../assets/eye-closed.svg'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const practiceStore = usePracticeStore()
 
 const form = reactive({
   firstname: '',
@@ -247,7 +249,7 @@ const submitRegisterForm = async () => {
     await authStore.register(payload)
     isSuccess.value = true
     formMessage.value = 'Compte créé. Connexion en cours...'
-    await router.push({ name: 'home' })
+    await router.push({ name: practiceStore.resumeAfterAuthentication ? 'pause' : 'home' })
   } catch (error) {
     isSuccess.value = false
 

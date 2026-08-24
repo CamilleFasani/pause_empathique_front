@@ -64,12 +64,14 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useAuthStore, type LoginPayload } from '../stores/auth'
+import { usePracticeStore } from '../stores/practice'
 
 import eyeOpenIcon from '../assets/eye-solid.svg'
 import eyeClosedIcon from '../assets/eye-closed.svg'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const practiceStore = usePracticeStore()
 
 const form = reactive({
   email: '',
@@ -121,7 +123,7 @@ const submitLoginForm = async () => {
 
   try {
     await authStore.login(payload)
-    await router.push({ name: 'home' })
+    await router.push({ name: practiceStore.resumeAfterAuthentication ? 'pause' : 'home' })
   } catch (error) {
     if (error instanceof AxiosError && [400, 401].includes(error.response?.status ?? 0)) {
       formMessage.value = 'Email ou mot de passe incorrect.'

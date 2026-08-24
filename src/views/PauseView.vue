@@ -1,179 +1,188 @@
 <template>
-  <div class="flex min-h-dvh w-full bg-bg-page font-body text-black">
-    <main class="flex min-h-dvh flex-1 justify-center overflow-y-auto">
-      <section class="flex min-h-dvh w-full max-w-md flex-col px-5 pt-4 pb-8">
-        <header class="flex h-8 items-center justify-between">
-          <button
-            type="button"
-            class="flex size-8 items-center justify-center focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
-            aria-label="Ouvrir le menu"
-          >
-            <img :src="MenuIcon" alt="" class="h-7 w-auto" />
-          </button>
-
-          <RouterLink
-            :to="{ name: accountRouteName }"
-            class="flex size-8 items-center justify-center focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
-            aria-label="Accéder au compte"
-          >
-            <img :src="UserIcon" alt="" class="h-7 w-auto" />
-          </RouterLink>
-        </header>
-
-        <div class="mt-1 flex justify-center">
-          <div
-            class="relative flex h-[clamp(8rem,55vw,13.5rem)] w-[clamp(8rem,55vw,13.5rem)] items-center justify-center rounded-full bg-white"
-          >
-            <div class="absolute top-6 flex gap-2" aria-hidden="true">
-              <span class="h-5 w-2 rounded-sm bg-brand-primary"></span>
-              <span class="h-5 w-2 rounded-sm bg-brand-primary"></span>
-            </div>
-            <p class="mt-7 text-lg">Pratiquer</p>
-          </div>
-        </div>
-
-        <nav
-          class="mt-1 flex items-center justify-between text-xs"
-          aria-label="Navigation de la pratique"
-        >
-          <RouterLink :to="{ name: 'needs' }" class="py-2 focus-visible:outline-2">
-            &lt; Besoins
-          </RouterLink>
-          <RouterLink :to="{ name: 'welcome' }" class="py-2 focus-visible:outline-2">
-            Accueil
-          </RouterLink>
-        </nav>
-
-        <div class="mt-3 text-center">
-          <label for="pause-title" class="sr-only">Titre de la pause</label>
-          <input
-            v-if="isEditingTitle"
-            id="pause-title"
-            ref="titleInput"
-            v-model="draft.title"
-            type="text"
-            :placeholder="defaultTitle"
-            class="w-full bg-transparent text-center text-sm font-bold placeholder:text-black placeholder:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-black"
-            @blur="stopEditingTitle"
-            @keydown.enter="stopEditingTitle"
-          />
-          <button
-            v-else
-            type="button"
-            class="w-full py-1 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-black"
-            aria-label="Modifier le titre de la pause"
-            @click="startEditingTitle"
-          >
-            {{ displayedTitle }}
-          </button>
-        </div>
-
-        <div class="mt-5 space-y-5">
-          <section aria-labelledby="empty-your-bag-title">
-            <h2 id="empty-your-bag-title" class="flex items-center gap-2 text-xs font-bold">
-              <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
-              Vide ton sac
-            </h2>
-            <p class="mt-3 min-h-12 rounded-btn bg-white px-4 py-3 text-sm leading-relaxed whitespace-pre-line">
-              {{ draft.emptyYourBag || 'Aucun texte saisi.' }}
-            </p>
-          </section>
-
-          <section aria-labelledby="observation-title">
-            <h2 id="observation-title" class="flex items-center gap-2 text-xs font-bold">
-              <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
-              Observation
-            </h2>
-            <p class="mt-3 min-h-36 rounded-btn bg-white px-4 py-3 text-sm leading-relaxed whitespace-pre-line">
-              {{ draft.observation || 'Aucun texte saisi.' }}
-            </p>
-          </section>
-
-          <section aria-labelledby="feelings-title">
-            <h2 id="feelings-title" class="flex items-center gap-2 text-xs font-bold">
-              <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
-              Sentiments
-            </h2>
-            <div class="mt-3 space-y-3">
-              <p v-if="isLoadingCatalogs" class="rounded-btn bg-white px-4 py-3 text-sm">
-                Chargement...
-              </p>
-              <p v-else-if="catalogError" class="rounded-btn bg-white px-4 py-3 text-sm">
-                {{ catalogError }}
-              </p>
-              <p
-                v-else-if="selectedFeelings.length === 0"
-                class="rounded-btn bg-white px-4 py-3 text-sm"
-              >
-                Aucun sentiment sélectionné.
-              </p>
-              <div
-                v-for="feeling in selectedFeelings"
-                v-else
-                :key="feeling.id"
-                class="grid min-h-12 grid-cols-[4.75rem_1fr] items-center rounded-btn bg-white px-4 py-3 text-xs"
-              >
-                <span>{{ getFeelingLabel(feeling) }}</span>
-                <span class="h-1 bg-brand-primary" aria-hidden="true"></span>
-              </div>
-            </div>
-          </section>
-
-          <section aria-labelledby="needs-title">
-            <h2 id="needs-title" class="flex items-center gap-2 text-xs font-bold">
-              <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
-              Besoins
-            </h2>
-            <div class="mt-3 space-y-3">
-              <p v-if="isLoadingCatalogs" class="rounded-btn bg-white px-4 py-3 text-sm">
-                Chargement...
-              </p>
-              <p v-else-if="catalogError" class="rounded-btn bg-white px-4 py-3 text-sm">
-                {{ catalogError }}
-              </p>
-              <p
-                v-else-if="selectedNeeds.length === 0"
-                class="rounded-btn bg-white px-4 py-3 text-sm"
-              >
-                Aucun besoin sélectionné.
-              </p>
-              <div
-                v-for="need in selectedNeeds"
-                v-else
-                :key="need.id"
-                class="grid min-h-12 grid-cols-[4.75rem_1fr] items-center rounded-btn bg-white px-4 py-3 text-xs"
-              >
-                <span>{{ getNeedLabel(need) }}</span>
-                <span class="h-1 bg-brand-primary" aria-hidden="true"></span>
-              </div>
-            </div>
-          </section>
-        </div>
-
+  <AppLayout background-class="bg-bg-needs" overlay-header :show-footer="false">
+    <section class="flex min-h-dvh w-full max-w-md flex-col px-5 pt-2 pb-8">
+      <PracticeStepHeader :current-step="4" />
+      <div class="mt-5">
+        <label for="pause-title" class="sr-only">Titre de la pause</label>
+        <input
+          v-if="isEditingTitle"
+          id="pause-title"
+          ref="titleInput"
+          v-model="draft.title"
+          type="text"
+          :placeholder="defaultTitle"
+          class="w-full rounded-card bg-white/80 px-4 py-3 text-sm font-semibold placeholder:text-black/70 focus-visible:outline-1 focus-visible:outline-black"
+          @blur="stopEditingTitle"
+          @keydown.enter="stopEditingTitle"
+        />
         <button
+          v-else
           type="button"
-          class="mt-6 min-h-14 w-full rounded-btn bg-brand-primary px-5 py-4 text-sm font-semibold focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-black"
+          class="w-full rounded-card bg-white/80 px-4 py-3 text-left text-sm font-semibold focus-visible:outline-1 focus-visible:outline-black"
+          aria-label="Modifier le titre de la pause"
+          @click="startEditingTitle"
         >
-          Enregistrer
+          {{ displayedTitle }}
         </button>
-      </section>
-    </main>
+      </div>
 
-    <AppSidebar class="hidden lg:flex" />
-  </div>
+      <div class="mt-6 space-y-6">
+        <section aria-labelledby="empty-your-bag-title">
+          <h2 id="empty-your-bag-title" class="flex items-center gap-2 text-sm font-bold">
+            <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
+            Vide ton sac
+          </h2>
+          <p
+            class="mt-3 min-h-16 rounded-card bg-white/80 px-4 py-3 text-sm leading-relaxed whitespace-pre-line"
+          >
+            {{ draft.emptyYourBag || 'Aucun texte saisi.' }}
+          </p>
+        </section>
+
+        <section aria-labelledby="observation-title">
+          <h2 id="observation-title" class="flex items-center gap-2 text-sm font-bold">
+            <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
+            Observation
+          </h2>
+          <p
+            class="mt-3 min-h-28 rounded-card bg-white/80 px-4 py-3 text-sm leading-relaxed whitespace-pre-line"
+          >
+            {{ draft.observation || 'Aucun texte saisi.' }}
+          </p>
+        </section>
+
+        <section aria-labelledby="feelings-title">
+          <h2 id="feelings-title" class="flex items-center gap-2 text-sm font-bold">
+            <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
+            Sentiments
+          </h2>
+          <div class="mt-3 space-y-3">
+            <p v-if="isLoadingCatalogs" class="rounded-card bg-white/80 px-4 py-3 text-sm">
+              Chargement des sentiments...
+            </p>
+            <p v-else-if="catalogError" class="rounded-card bg-white/80 px-4 py-3 text-sm">
+              {{ catalogError }}
+            </p>
+            <p
+              v-else-if="selectedFeelings.length === 0"
+              class="rounded-card bg-white/80 px-4 py-3 text-sm"
+            >
+              Aucun sentiment sélectionné.
+            </p>
+            <PracticeSelectionCard
+              v-for="feeling in selectedFeelings"
+              v-else
+              :key="feeling.id"
+              :label="getFeelingLabel(feeling)"
+              @remove="practiceStore.toggleFeeling(feeling.id)"
+            />
+          </div>
+        </section>
+
+        <section aria-labelledby="needs-title">
+          <h2 id="needs-title" class="flex items-center gap-2 text-sm font-bold">
+            <span class="size-3 rounded-full bg-brand-primary" aria-hidden="true"></span>
+            Besoins
+          </h2>
+          <div class="mt-3 space-y-3">
+            <p v-if="isLoadingCatalogs" class="rounded-card bg-white/80 px-4 py-3 text-sm">
+              Chargement des besoins...
+            </p>
+            <p v-else-if="catalogError" class="rounded-card bg-white/80 px-4 py-3 text-sm">
+              {{ catalogError }}
+            </p>
+            <p
+              v-else-if="selectedNeeds.length === 0"
+              class="rounded-card bg-white/80 px-4 py-3 text-sm"
+            >
+              Aucun besoin sélectionné.
+            </p>
+            <PracticeSelectionCard
+              v-for="need in selectedNeeds"
+              v-else
+              :key="need.id"
+              :label="getNeedLabel(need)"
+              @remove="practiceStore.toggleNeed(need.id)"
+            />
+          </div>
+        </section>
+      </div>
+
+      <p v-if="practiceStore.error" class="mt-6 rounded-card bg-white/80 px-4 py-3 text-sm">
+        {{ practiceStore.error }}
+      </p>
+
+      <div class="mt-8 space-y-3">
+        <button
+          v-if="authStore.isAuthenticated"
+          type="button"
+          class="min-h-14 w-full rounded-btn bg-brand-primary px-5 py-4 text-sm font-semibold focus-visible:outline-1 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="practiceStore.isSubmitting || !practiceStore.canSubmit"
+          @click="saveAuthenticatedPause"
+        >
+          {{ practiceStore.isSubmitting ? 'Enregistrement...' : 'Enregistrer ma pause' }}
+        </button>
+
+        <template v-else>
+          <button
+            type="button"
+            class="min-h-14 w-full rounded-btn bg-brand-primary px-5 py-4 text-sm font-semibold focus-visible:outline-1 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="practiceStore.isSubmitting || !practiceStore.canSubmit"
+            @click="goToRegister"
+          >
+            Créer un compte pour enregistrer
+          </button>
+
+          <button
+            type="button"
+            class="min-h-12 w-full rounded-btn bg-white px-5 py-3 text-sm font-semibold focus-visible:outline-1 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="practiceStore.isSubmitting"
+            @click="finishAnonymousPractice"
+          >
+            {{ practiceStore.isSubmitting ? 'Finalisation...' : 'Terminer sans enregistrer' }}
+          </button>
+
+          <button
+            type="button"
+            class="w-full px-5 py-2 text-sm underline underline-offset-4 focus-visible:outline-1 focus-visible:outline-black"
+            @click="goToLogin"
+          >
+            J'ai déjà un compte
+          </button>
+        </template>
+      </div>
+
+      <nav class="mt-8 flex items-center justify-between" aria-label="Navigation de la pratique">
+        <RouterLink
+          :to="{ name: 'needs' }"
+          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
+        >
+          Précédent
+        </RouterLink>
+        <RouterLink
+          :to="{ name: 'welcome' }"
+          class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
+        >
+          Accueil
+        </RouterLink>
+      </nav>
+    </section>
+  </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import AppSidebar from '../components/AppSidebar.vue'
-import MenuIcon from '../assets/menu.svg'
-import UserIcon from '../assets/user.svg'
+import { useRouter } from 'vue-router'
+import AppLayout from '../layouts/AppLayout.vue'
+import PracticeSelectionCard from '../components/PracticeSelectionCard.vue'
+import PracticeStepHeader from '../components/PracticeStepHeader.vue'
 import { getFeelings, getNeeds, type Feeling, type Need } from '../api/practice'
 import { useGender } from '../composables/useGender'
 import { useAuthStore } from '../stores/auth'
 import { usePracticeStore } from '../stores/practice'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const practiceStore = usePracticeStore()
 const { draft } = storeToRefs(practiceStore)
@@ -185,8 +194,6 @@ const isLoadingCatalogs = ref(false)
 const catalogError = ref<string | null>(null)
 const isEditingTitle = ref(false)
 const titleInput = ref<HTMLInputElement | null>(null)
-
-const accountRouteName = computed(() => (authStore.isAuthenticated ? 'home' : 'login'))
 
 const defaultTitle = `Pause du ${new Intl.DateTimeFormat('fr-FR').format(new Date())}`
 
@@ -216,6 +223,39 @@ const startEditingTitle = async () => {
 
 const stopEditingTitle = () => {
   isEditingTitle.value = false
+}
+
+const saveAuthenticatedPause = async () => {
+  if (!authStore.isAuthenticated) {
+    return
+  }
+
+  try {
+    practiceStore.continueAuthenticated()
+    await practiceStore.submitAuthenticatedPause()
+    await router.push({ name: 'home' })
+  } catch {
+    // The store exposes a safe user-facing error message.
+  }
+}
+
+const goToRegister = async () => {
+  practiceStore.prepareAuthentication()
+  await router.push({ name: 'register' })
+}
+
+const goToLogin = async () => {
+  practiceStore.prepareAuthentication()
+  await router.push({ name: 'login' })
+}
+
+const finishAnonymousPractice = async () => {
+  try {
+    await practiceStore.submitAnonymousPractice()
+    await router.push({ name: 'welcome' })
+  } catch {
+    // The store exposes a safe user-facing error message.
+  }
 }
 
 onMounted(async () => {
