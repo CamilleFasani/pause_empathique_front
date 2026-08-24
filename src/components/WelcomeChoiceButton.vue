@@ -8,6 +8,10 @@ defineProps<{
   to: RouteLocationRaw
 }>()
 
+defineEmits<{
+  select: []
+}>()
+
 const arcId = `welcome-choice-arc-${useId()}`
 </script>
 
@@ -16,6 +20,7 @@ const arcId = `welcome-choice-arc-${useId()}`
     :to="to"
     :aria-label="`${label} — ${curvedLabel}`"
     class="relative z-10 flex h-35 w-35 shrink-0 items-center justify-center rounded-full bg-brand-primary text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+    @click="$emit('select')"
   >
     <span class="max-w-24 font-logo text-lg leading-tight">{{ label }}</span>
 

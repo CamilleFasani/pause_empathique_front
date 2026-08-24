@@ -4,6 +4,13 @@ import EmpathicPath from '../components/EmpathicPath.vue'
 import WelcomeChoiceButton from '../components/WelcomeChoiceButton.vue'
 import logoNameSrc from '../assets/logo-name.svg'
 import welcomeBg from '../assets/welcome-bg.svg'
+import { usePracticeStore } from '../stores/practice'
+
+const practiceStore = usePracticeStore()
+
+const startAnonymousPractice = () => {
+  practiceStore.start('anonymous')
+}
 </script>
 
 <template>
@@ -16,6 +23,7 @@ import welcomeBg from '../assets/welcome-bg.svg'
           label="Libre comme l'air"
           curved-label="Pratiquer sans compte"
           :to="{ name: 'empty-your-bag' }"
+          @select="startAnonymousPractice"
         />
         <WelcomeChoiceButton
           class="mt-4"

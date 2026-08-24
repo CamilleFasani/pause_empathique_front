@@ -170,12 +170,14 @@ import AppSidebar from '../components/AppSidebar.vue'
 import MenuIcon from '../assets/menu.svg'
 import UserIcon from '../assets/user.svg'
 import { getFeelings, getNeeds, type Feeling, type Need } from '../api/practice'
+import { useGender } from '../composables/useGender'
 import { useAuthStore } from '../stores/auth'
 import { usePracticeStore } from '../stores/practice'
 
 const authStore = useAuthStore()
 const practiceStore = usePracticeStore()
 const { draft } = storeToRefs(practiceStore)
+const { feelingNameGender } = useGender()
 
 const feelings = ref<Feeling[]>([])
 const needs = ref<Need[]>([])
@@ -202,7 +204,7 @@ const selectedNeeds = computed(() =>
     .filter((need): need is Need => need !== undefined),
 )
 
-const getFeelingLabel = (feeling: Feeling) => feeling.names.f
+const getFeelingLabel = (feeling: Feeling) => feeling.names[feelingNameGender.value]
 
 const getNeedLabel = (need: Need) => need.name
 
