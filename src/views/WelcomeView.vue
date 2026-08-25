@@ -1,18 +1,3 @@
-<script setup lang="ts">
-import AppLayout from '../layouts/AppLayout.vue'
-import EmpathicPath from '../components/EmpathicPath.vue'
-import WelcomeChoiceButton from '../components/WelcomeChoiceButton.vue'
-import logoNameSrc from '../assets/logo-name.svg'
-import welcomeBg from '../assets/welcome-bg.svg'
-import { usePracticeStore } from '../stores/practice'
-
-const practiceStore = usePracticeStore()
-
-const startAnonymousPractice = () => {
-  practiceStore.start('anonymous')
-}
-</script>
-
 <template>
   <AppLayout :bg-image="welcomeBg">
     <div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
@@ -35,3 +20,17 @@ const startAnonymousPractice = () => {
     </div>
   </AppLayout>
 </template>
+<script setup lang="ts">
+import AppLayout from '../layouts/AppLayout.vue'
+import EmpathicPath from '../components/EmpathicPath.vue'
+import WelcomeChoiceButton from '../components/WelcomeChoiceButton.vue'
+import logoNameSrc from '../assets/logo-name.svg'
+import welcomeBg from '../assets/welcome-bg.svg'
+import { usePracticeStore } from '../stores/practice'
+
+const practiceStore = usePracticeStore()
+
+const startAnonymousPractice = () => {
+  practiceStore.start('anonymous')
+}
+</script>

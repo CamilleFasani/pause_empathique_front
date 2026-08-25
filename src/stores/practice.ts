@@ -1,3 +1,8 @@
+/**
+ * Conserve l'état du parcours de pratique partagé par l'application.
+ * Gère le brouillon en cours, le mode anonyme ou authentifié,
+ * les sélections de sentiments et besoins, puis orchestre la soumission.
+ */
 import { defineStore } from 'pinia'
 
 import {
