@@ -34,6 +34,13 @@ export interface PauseResponse {
   needs: Need[]
 }
 
+interface PaginatedResponse<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
 export const getFeelings = async (): Promise<Feeling[]> => {
   const response = await apiClient.get<Feeling[]>('/feelings/')
   return response.data
@@ -47,6 +54,20 @@ export const getNeeds = async (): Promise<Need[]> => {
 export const createPause = async (payload: PauseCreatePayload): Promise<PauseResponse> => {
   const response = await apiClient.post<PauseResponse>('/pauses/', payload)
   return response.data
+}
+
+export const getPauses = async (): Promise<PauseResponse[]> => {
+  const response = await apiClient.get<PaginatedResponse<PauseResponse>>('/pauses/')
+  return response.data.results
+}
+
+export const getPause = async (id: number): Promise<PauseResponse> => {
+  const response = await apiClient.get<PauseResponse>(`/pauses/${id}/`)
+  return response.data
+}
+
+export const deletePause = async (id: number): Promise<void> => {
+  await apiClient.delete(`/pauses/${id}/`)
 }
 
 export const countAnonymousPractice = async (): Promise<void> => {

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="flex size-65 items-center justify-center rounded-full bg-bg-circle-white">
-      <p class="mt-6 text-2xl">Pratiquer</p>
+      <p class="mt-6 text-3xl font-logo">Pratiquer</p>
     </div>
 
     <ol class="mt-4 flex gap-2" aria-label="Progression de la pratique">

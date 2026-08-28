@@ -233,7 +233,7 @@ const saveAuthenticatedPause = async () => {
   try {
     practiceStore.continueAuthenticated()
     await practiceStore.submitAuthenticatedPause()
-    await router.push({ name: 'home' })
+    await router.push({ name: 'diary' })
   } catch {
     // The store exposes a safe user-facing error message.
   }
