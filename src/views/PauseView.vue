@@ -160,6 +160,7 @@
           Précédent
         </RouterLink>
         <RouterLink
+          v-if="authStore.isAuthenticated"
           :to="{ name: 'home' }"
           class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >

@@ -1,6 +1,6 @@
 <template>
   <AppLayout background-class="bg-bg-page" overlay-header :show-footer="false">
-    <section class="flex min-h-dvh w-full max-w-md flex-col px-5 pt-24 pb-8">
+    <section class="flex min-h-dvh w-full max-w-md flex-col px-5 pt-16 pb-8">
       <p v-if="isLoading" class="mt-6 rounded-card bg-white px-5 py-4 text-sm">
         Chargement de la pause...
       </p>
@@ -9,7 +9,7 @@
       </p>
 
       <article v-else-if="pause" class="mt-6 space-y-6">
-        <header class="rounded-card bg-white px-5 py-5">
+        <header class="rounded-card bg-white px-5 py-4">
           <h1 class="mt-2 font-logo text-2xl leading-tight">{{ pause.title }}</h1>
         </header>
 
@@ -225,7 +225,7 @@ const deleteCurrentPause = async () => {
 
   try {
     await deletePause(pause.value.id)
-    await router.push({ name: 'diary' })
+    await router.push({ name: 'home' })
   } catch {
     deleteError.value = "La pause n'a pas pu être supprimée. Merci de réessayer."
   } finally {
