@@ -72,7 +72,7 @@
           </div>
         </section>
         <section aria-labelledby="creation-date">
-          <p class="text-xs text-black/70">{{ formattedDate }}</p>
+          <p id="creation-date" class="text-xs text-black/70">{{ formattedDate }}</p>
         </section>
         <button
           type="button"
