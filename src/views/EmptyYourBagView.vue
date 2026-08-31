@@ -30,15 +30,15 @@
         class="mt-6 h-[clamp(16rem,38dvh,22.5rem)] w-full resize-none rounded-card bg-bg-card p-4 focus-visible:outline-1 focus-visible:outline-black"
       />
 
-      <button
+      <!-- <button
         type="button"
         aria-label="Dicter le contenu"
         class="mx-auto mt-4 flex size-14 shrink-0 items-center justify-center rounded-full bg-white focus-visible:outline-1 focus-visible:outline-black"
       >
         <img :src="MicroIcon" alt="Enregistrer à la voix" class="h-8 w-auto" />
-      </button>
+      </button> -->
 
-      <nav class="mt-8 flex items-center justify-between" aria-label="Navigation de la pratique">
+      <nav class="mt-12 flex items-center justify-between" aria-label="Navigation de la pratique">
         <RouterLink
           :to="{ name: 'welcome' }"
           class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
@@ -62,7 +62,7 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import AppLayout from '../layouts/AppLayout.vue'
 import PracticeStepHeader from '../components/PracticeStepHeader.vue'
-import MicroIcon from '../assets/microphone.svg'
+// import MicroIcon from '../assets/microphone.svg'
 import InfoIcon from '../assets/info-circle.svg'
 import { usePracticeStore } from '../stores/practice'
 

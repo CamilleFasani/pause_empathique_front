@@ -160,7 +160,7 @@
           Précédent
         </RouterLink>
         <RouterLink
-          :to="{ name: 'welcome' }"
+          :to="{ name: 'home' }"
           class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >
           Accueil
@@ -233,7 +233,7 @@ const saveAuthenticatedPause = async () => {
   try {
     practiceStore.continueAuthenticated()
     await practiceStore.submitAuthenticatedPause()
-    await router.push({ name: 'diary' })
+    await router.push({ name: 'home' })
   } catch {
     // The store exposes a safe user-facing error message.
   }

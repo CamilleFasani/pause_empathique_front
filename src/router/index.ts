@@ -74,7 +74,10 @@ router.beforeEach(async (to) => {
     return { name: 'welcome' }
   }
 
-  if ((to.name === 'login' || to.name === 'register') && authStore.isAuthenticated) {
+  if (
+    (to.name === 'welcome' || to.name === 'login' || to.name === 'register') &&
+    authStore.isAuthenticated
+  ) {
     return { name: 'home' }
   }
 })

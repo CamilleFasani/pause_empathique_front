@@ -7,22 +7,23 @@
       >
         <h1 id="my-diary" class="px-8 text-2xl/10 font-logo">Mon journal</h1>
       </div>
-
-      <nav class="-mt-3 flex items-center justify-between text-sm" aria-label="Navigation rapide">
+      <div class="-mt-10 flex items-center justify-center gap-3">
         <RouterLink
           :to="{ name: 'home' }"
-          class="focus-visible:outline-1 focus-visible:outline-black"
+          class="flex size-28 -translate-y-6 items-center justify-center rounded-full bg-brand-primary-hover px-4 text-center text-sm text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+          aria-label="Accueil"
         >
-          &lt; Accueil
+          Accueil
         </RouterLink>
+
         <button
           type="button"
-          class="focus-visible:outline-1 focus-visible:outline-black"
+          class="flex size-32 items-center justify-center rounded-full bg-brand-primary px-4 text-center text-sm text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
           @click="startPractice"
         >
-          Pratiquer &gt;
+          Pratiquer
         </button>
-      </nav>
+      </div>
 
       <section class="mt-8 flex flex-1 flex-col" aria-labelledby="all-pauses-title">
         <h2 id="all-pauses-title" class="text-sm font-bold">Mes pauses</h2>
