@@ -1,4 +1,5 @@
 import { apiClient } from './client'
+import type { AxiosResponse } from 'axios'
 
 export interface Feeling {
   id: number
@@ -58,7 +59,23 @@ export const createPause = async (payload: PauseCreatePayload): Promise<PauseRes
 
 export const getPauses = async (): Promise<PauseResponse[]> => {
   const response = await apiClient.get<PaginatedResponse<PauseResponse>>('/pauses/')
+
   return response.data.results
+}
+
+export const getAllPauses = async (): Promise<PauseResponse[]> => {
+  const pauses: PauseResponse[] = []
+  let nextPageUrl: string | null = '/pauses/'
+
+  while (nextPageUrl) {
+    const response: AxiosResponse<PaginatedResponse<PauseResponse>> =
+      await apiClient.get<PaginatedResponse<PauseResponse>>(nextPageUrl)
+
+    pauses.push(...response.data.results)
+    nextPageUrl = response.data.next
+  }
+
+  return pauses
 }
 
 export const getPause = async (id: number): Promise<PauseResponse> => {

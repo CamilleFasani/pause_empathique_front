@@ -2,7 +2,7 @@
   <AppLayout background-class="bg-bg-page" overlay-header :show-footer="false">
     <section class="flex min-h-dvh w-full max-w-md flex-col items-center px-5 pt-3 pb-8">
       <div
-        class="flex size-65 flex-col items-center justify-center rounded-full bg-white text-center"
+        class="flex size-65 flex-col items-center justify-center rounded-full bg-white text-center shadow-[0_18px_45px_rgba(26,19,0,0.12)]"
         aria-labelledby="home-greeting"
       >
         <h1 id="home-greeting" class="px-8 text-2xl/10 font-logo">Bonjour</h1>
@@ -12,7 +12,7 @@
       <div class="-mt-10 flex items-center justify-center gap-3">
         <RouterLink
           :to="{ name: 'diary' }"
-          class="flex size-28 -translate-y-6 items-center justify-center rounded-full bg-[#d9a100] px-4 text-center text-sm text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+          class="flex size-28 -translate-y-6 items-center justify-center rounded-full bg-[#d9a100] px-4 text-center text-sm text-black shadow-[0_12px_28px_rgba(26,19,0,0.14)] transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
           aria-label="Ouvrir mon journal"
         >
           Mon journal
@@ -20,7 +20,7 @@
 
         <button
           type="button"
-          class="flex size-32 items-center justify-center rounded-full bg-brand-primary px-4 text-center text-sm text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+          class="flex size-32 items-center justify-center rounded-full bg-brand-primary px-4 text-center text-sm text-black shadow-[0_16px_34px_rgba(26,19,0,0.18)] transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
           @click="startPractice"
         >
           Pratiquer
