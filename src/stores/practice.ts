@@ -49,6 +49,13 @@ export const usePracticeStore = defineStore('practice', {
 
   getters: {
     hasStarted: (state) => state.mode !== null,
+    hasDraftData: (state) =>
+      Boolean(
+        state.draft.emptyYourBag.trim() ||
+          state.draft.observation.trim() ||
+          state.draft.feelingIds.length > 0 ||
+          state.draft.needIds.length > 0,
+      ),
     canSubmit: (state) =>
       state.draft.feelingIds.length > 0 && state.draft.needIds.length > 0,
   },
