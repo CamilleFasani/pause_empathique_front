@@ -1,10 +1,10 @@
 <template>
-  <AppLayout background-class="bg-bg-empty-your-bag" overlay-header :show-footer="false">
+  <AppLayout background-class="bg-bg-observation" overlay-header :show-footer="false">
     <section class="flex min-h-dvh w-full max-w-md flex-col px-5 pt-2 pb-8">
-      <PracticeStepHeader :current-step="1" />
+      <PracticeStepHeader :current-step="2" />
 
       <div class="mt-3">
-        <h1 class="font-semibold">Vide ton sac</h1>
+        <h1 class="font-semibold">Observation</h1>
         <img
           :src="InfoIcon"
           alt="Informations"
@@ -12,21 +12,16 @@
           @click="showIntroText = !showIntroText"
         />
         <div v-if="showIntroText">
-          <p class="mt-5">
-            Cette première étape, facultative, te permet de faire parler ton chacal, vider le trop
-            plein de pensées et d'émotions avant d'entrer dans la phase d'observation.
-          </p>
-          <p class="mt-5">
-            Ecris ce que tu veux, sans te censurer, sans te juger. Tu peux aussi faire un vocal.
-          </p>
+          <p class="mt-5">Cette deuxième étape t'invite à décrire factuellement ce qui se passe.</p>
+          <p class="mt-5">Prends le temps de trouver tes mots. Tu peux aussi faire un vocal.</p>
         </div>
       </div>
 
-      <label for="bag-content" class="sr-only">Ce que tu souhaites déposer</label>
+      <label for="observation-content" class="sr-only">Ce que tu observes</label>
       <textarea
-        id="bag-content"
-        v-model="draft.emptyYourBag"
-        name="bag-content"
+        id="observation-content"
+        v-model="draft.observation"
+        name="observation-content"
         class="mt-6 h-[clamp(16rem,38dvh,22.5rem)] w-full resize-none rounded-card bg-bg-card p-4 focus-visible:outline-1 focus-visible:outline-black"
       />
 
@@ -38,15 +33,15 @@
         <img :src="MicroIcon" alt="Enregistrer à la voix" class="h-8 w-auto" />
       </button> -->
 
-      <nav class="mt-12 flex items-center justify-between" aria-label="Navigation de la pratique">
+      <nav class="mt-8 flex items-center justify-between" aria-label="Navigation de la pratique">
         <RouterLink
-          :to="{ name: 'welcome' }"
+          :to="{ name: 'empty-your-bag' }"
           class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >
-          Accueil
+          Précédent
         </RouterLink>
         <RouterLink
-          :to="{ name: 'observation' }"
+          :to="{ name: 'feelings' }"
           type="button"
           class="rounded-btn bg-white px-6 py-3 text-sm focus-visible:outline-1 focus-visible:outline-black"
         >

@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import { useId } from 'vue'
-import type { RouteLocationRaw } from 'vue-router'
+import { computed, useId } from 'vue'
+import { RouterLink, type RouteLocationRaw } from 'vue-router'
 
-defineProps<{
+const props = defineProps<{
   label: string
   curvedLabel: string
-  to: RouteLocationRaw
+  to?: RouteLocationRaw
+}>()
+
+defineEmits<{
+  select: []
 }>()
 
 const arcId = `welcome-choice-arc-${useId()}`
+const componentType = computed(() => (props.to ? RouterLink : 'button'))
+const componentProps = computed(() => (props.to ? { to: props.to } : { type: 'button' }))
 </script>
 
 <template>
-  <RouterLink
-    :to="to"
+  <component
+    :is="componentType"
+    v-bind="componentProps"
     :aria-label="`${label} — ${curvedLabel}`"
     class="relative z-10 flex h-35 w-35 shrink-0 items-center justify-center rounded-full bg-brand-primary text-black transition-transform hover:scale-[1.02] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+    @click="$emit('select')"
   >
     <span class="max-w-24 font-logo text-lg leading-tight">{{ label }}</span>
 
@@ -33,5 +41,5 @@ const arcId = `welcome-choice-arc-${useId()}`
         </textPath>
       </text>
     </svg>
-  </RouterLink>
+  </component>
 </template>

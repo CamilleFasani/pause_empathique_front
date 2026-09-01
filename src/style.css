@@ -47,5 +47,5 @@ body {
   /* --- États (optionnel, à compléter plus tard) ---------------------------- */
   /* --color-success:       ; */
   /* --color-error:         ; */
-  /* --color-warning:       ; */
+  --color-warning: #f74e00;
 }

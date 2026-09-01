@@ -24,6 +24,14 @@ export interface AccessTokenResponse {
   access: string
 }
 
+export interface UserProfile {
+  email: string
+  firstname: string
+  gender: Gender
+  created_at: string
+  updated_at: string
+}
+
 export const registerUser = async (payload: RegisterPayload): Promise<void> => {
   await apiClient.post('/auth/register/', payload, { skipAuthRefresh: true })
 }
@@ -41,6 +49,11 @@ export const refreshAccessToken = async (): Promise<AccessTokenResponse> => {
     skipAuthRefresh: true,
   })
 
+  return response.data
+}
+
+export const getCurrentUser = async (): Promise<UserProfile> => {
+  const response = await apiClient.get<UserProfile>('/users/me/')
   return response.data
 }
 

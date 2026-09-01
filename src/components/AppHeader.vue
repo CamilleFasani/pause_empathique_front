@@ -1,22 +1,27 @@
 <template>
-  <header class="relative flex items-center justify-between p-4 font-bold">
-    <button type="button" aria-label="Ouvrir le menu">
+  <header
+    class="grid grid-cols-[1fr_auto_1fr] items-center p-4 font-bold"
+    :class="overlay ? 'absolute top-0 left-0 w-full' : 'relative'"
+  >
+    <button class="justify-self-start" type="button" aria-label="Ouvrir le menu">
       <img :src="MenuIcon" alt="Menu" class="h-8 w-auto" />
     </button>
     <img
       :src="logoSrc"
       alt="Logo Pause Empathique"
-      class="h-12 w-auto"
+      class="h-12 w-auto justify-self-center"
       @click="router.push({ name: 'welcome' })"
     />
     <button
+      v-if="authStore.isAuthenticated"
       type="button"
       aria-label="Ouvrir le menu du compte"
       aria-controls="account-menu"
       :aria-expanded="isAccountMenuOpen"
+      class="justify-self-end"
       @click="isAccountMenuOpen = !isAccountMenuOpen"
     >
-      <img v-if="authStore.isAuthenticated" :src="UserIcon" alt="Mon compte" class="h-8 w-auto" />
+      <img :src="UserIcon" alt="Mon compte" class="h-8 w-auto" />
     </button>
     <nav
       v-if="authStore.isAuthenticated && isAccountMenuOpen"
@@ -42,6 +47,15 @@ import UserIcon from '../assets/user.svg'
 import MenuIcon from '../assets/menu.svg'
 import router from '../router'
 import { useAuthStore } from '../stores/auth'
+
+withDefaults(
+  defineProps<{
+    overlay?: boolean
+  }>(),
+  {
+    overlay: false,
+  },
+)
 
 const authStore = useAuthStore()
 const isAccountMenuOpen = ref(false)
