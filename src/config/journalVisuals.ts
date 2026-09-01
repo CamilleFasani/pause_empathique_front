@@ -1,3 +1,6 @@
+/**
+ * Associe les familles de sentiments aux couleurs et les besoins aux icônes.
+ */
 import type { Component } from 'vue'
 import {
   HomeShield,

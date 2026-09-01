@@ -1,3 +1,7 @@
+<!--
+  Fournit la structure commune des pages applicatives.
+  Gère fond, en-tête mobile, logo desktop, contenu principal et navigation large.
+-->
 <template>
   <div
     class="relative flex min-h-dvh w-full flex-col font-body"

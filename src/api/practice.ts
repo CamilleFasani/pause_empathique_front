@@ -1,3 +1,7 @@
+/**
+ * Centralise les appels à l'API de pratique.
+ * Définit les contrats front des sentiments, besoins, pauses et soumissions.
+ */
 import { apiClient } from './client'
 import type { AxiosResponse } from 'axios'
 

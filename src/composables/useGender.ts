@@ -1,3 +1,7 @@
+/**
+ * Résout le genre grammatical à utiliser pour afficher les sentiments.
+ * Priorise le profil connecté puis le choix temporaire du parcours anonyme.
+ */
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
