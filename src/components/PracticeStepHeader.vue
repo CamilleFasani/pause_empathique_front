@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col items-center">
-    <div class="flex size-65 items-center justify-center rounded-full bg-bg-circle-white">
+    <div
+      class="flex size-65 items-center justify-center rounded-full bg-bg-circle-white shadow-[0_18px_45px_rgba(26,19,0,0.12)]"
+    >
       <p class="mt-6 text-3xl font-logo">Pratiquer</p>
     </div>
 

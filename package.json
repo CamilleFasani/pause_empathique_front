@@ -13,6 +13,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@iconoir/vue": "^7.12.1",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.17.0",
     "pinia": "^3.0.4",

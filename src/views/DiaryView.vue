@@ -217,102 +217,60 @@
           Aucune pause ne correspond à ces filtres.
         </p>
 
-        <div v-else class="mt-6 space-y-4">
-          <template v-for="group in groupedPauses" :key="group.dateKey">
-            <div class="flex items-center gap-3" aria-hidden="true">
-              <span class="h-px flex-1 bg-black/10"></span>
-              <span
-                class="rounded-full bg-brand-primary-hover px-4 py-2 text-center text-xs font-semibold shadow-[0_8px_18px_rgba(26,19,0,0.08)]"
-              >
-                {{ group.label }}
-              </span>
-              <span class="h-px flex-1 bg-black/10"></span>
-            </div>
+        <div v-else class="relative mt-6 pl-6">
+          <span
+            class="absolute top-2 bottom-6 left-1.5 w-px bg-brand-primary"
+            aria-hidden="true"
+          ></span>
 
-            <RouterLink
-              v-for="pauseItem in group.pauses"
-              :key="pauseItem.id"
-              :to="{ name: 'pause-detail', params: { id: pauseItem.id } }"
-              class="flex min-h-20 items-center gap-4 rounded-card bg-white px-4 py-3 text-black shadow-[0_10px_24px_rgba(26,19,0,0.08)] transition-transform hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-            >
+          <div class="space-y-5">
+            <section v-for="group in groupedPauses" :key="group.dateKey" class="relative">
               <span
-                class="flex size-12 shrink-0 items-center justify-center rounded-full"
-                :class="getPauseVisual(pauseItem).badgeClass"
+                class="absolute top-1.5 -left-6 size-3 rounded-full border-2 border-brand-primary bg-bg-page shadow-[0_0_0_4px_rgba(255,244,213,0.95)]"
                 aria-hidden="true"
-              >
-                <svg
-                  class="size-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle v-if="getPauseVisual(pauseItem).icon === 'sun'" cx="12" cy="12" r="3" />
-                  <path
-                    v-if="getPauseVisual(pauseItem).icon === 'sun'"
-                    d="M12 2v2 M12 20v2 M4 12H2 M22 12h-2 M5 5l1.5 1.5 M17.5 17.5 19 19 M19 5l-1.5 1.5 M6.5 17.5 5 19"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'heart'"
-                    d="M20.5 8.8c0 5.1-8.5 9.7-8.5 9.7S3.5 13.9 3.5 8.8A4.5 4.5 0 0 1 12 6.7a4.5 4.5 0 0 1 8.5 2.1Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'leaf'"
-                    d="M19.5 4.5C11 4.8 6 8.8 5 17c5.8 1.2 10.9-1.4 14.5-12.5Z M5 17c2.5-3.8 5.5-6.2 9-7.2"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'anchor'"
-                    d="M12 4v13 M8 7h8 M5 14c1.2 3 3.5 5 7 5s5.8-2 7-5 M9 17l-4-3 M15 17l4-3"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'wave'"
-                    d="M3 14c2.5-3 5.5-3 8 0s5.5 3 10 0 M3 18c2.5-3 5.5-3 8 0s5.5 3 10 0"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'shield'"
-                    d="M12 3 19 6v5c0 4.2-2.8 7.8-7 10-4.2-2.2-7-5.8-7-10V6l7-3Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'spark'"
-                    d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z M18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8L18 16Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'drop'"
-                    d="M12 3s6 6.3 6 11a6 6 0 0 1-12 0c0-4.7 6-11 6-11Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'spiral'"
-                    d="M12 12c2.5-2.4 7-1 7 2.5S15.7 21 11 21s-8-3.2-8-7.4S6.8 5 12 5c3.4 0 6 1.8 6 4.2"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'moon'"
-                    d="M19 15.5A7.5 7.5 0 0 1 8.5 5a7.5 7.5 0 1 0 10.5 10.5Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'balance'"
-                    d="M12 4v16 M6 7h12 M7 7l-3 6h6L7 7Z M17 7l-3 6h6l-3-6Z"
-                  />
-                  <path
-                    v-else-if="getPauseVisual(pauseItem).icon === 'bridge'"
-                    d="M4 18V9 M20 18V9 M4 14c4-5 12-5 16 0 M7 18v-4 M12 18v-6 M17 18v-4"
-                  />
-                  <path v-else d="M12 5v14 M8 8v8 M16 8v8" />
-                </svg>
-              </span>
+              ></span>
 
-              <span class="min-w-0 flex-1">
-                <span class="block truncate text-sm font-semibold">{{ pauseItem.title }}</span>
-                <span class="mt-1 block text-xs text-black/55">
-                  {{ getPauseVisual(pauseItem).label }}
-                </span>
-              </span>
-              <span class="text-sm font-semibold text-black/55">
-                {{ formatPauseTime(pauseItem.created_at) }}
-              </span>
-            </RouterLink>
-          </template>
+              <h3 class="text-xs font-bold leading-6 text-black/80">{{ group.label }}</h3>
+
+              <div class="mt-3 space-y-3">
+                <RouterLink
+                  v-for="pauseItem in group.pauses"
+                  :key="pauseItem.id"
+                  :to="{ name: 'pause-detail', params: { id: pauseItem.id } }"
+                  class="grid min-h-20 grid-cols-[3rem_1fr_auto] items-center gap-3 rounded-card bg-white px-4 py-3 text-black shadow-[0_10px_24px_rgba(26,19,0,0.08)] transition-transform hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                >
+                  <span
+                    class="flex size-12 shrink-0 items-center justify-center rounded-full text-black"
+                    :style="getPauseVisual(pauseItem).badgeStyle"
+                    aria-hidden="true"
+                  >
+                    <JournalPauseIcon :icon-component="getPauseVisual(pauseItem).iconComponent" />
+                  </span>
+
+                  <span class="min-w-0">
+                    <span class="block truncate text-sm font-semibold">{{ pauseItem.title }}</span>
+                    <span class="mt-1 block text-xs text-black/65">
+                      {{ formatPauseTime(pauseItem.created_at) }}
+                    </span>
+                    <span class="sr-only">{{ getPauseVisual(pauseItem).label }}</span>
+                  </span>
+
+                  <svg
+                    class="size-5 text-black/35"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </RouterLink>
+              </div>
+            </section>
+          </div>
         </div>
       </section>
     </section>
@@ -320,28 +278,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, type Component, type StyleValue } from 'vue'
 import { useRouter } from 'vue-router'
 import AppLayout from '../layouts/AppLayout.vue'
+import JournalPauseIcon from '../components/JournalPauseIcon.vue'
 import { getAllPauses, getFeelings, getNeeds, type PauseResponse } from '../api/practice'
 import { usePracticeStore } from '../stores/practice'
+import {
+  defaultJournalFeelingColor,
+  defaultJournalNeedIconComponent,
+  journalFeelingColors,
+  journalNeedIconComponents,
+} from '../config/journalVisuals'
 
 type FilterPanel = 'feelings' | 'needs' | 'date'
 type DateFilter = 'all' | '7days' | '30days' | 'month' | 'custom'
-type JournalIcon =
-  | 'sun'
-  | 'heart'
-  | 'leaf'
-  | 'anchor'
-  | 'wave'
-  | 'shield'
-  | 'spark'
-  | 'drop'
-  | 'spiral'
-  | 'moon'
-  | 'balance'
-  | 'bridge'
-  | 'pause'
 
 interface PauseGroup {
   dateKey: string
@@ -350,9 +301,15 @@ interface PauseGroup {
 }
 
 interface PauseVisual {
-  icon: JournalIcon
+  iconComponent: Component
   label: string
-  badgeClass: string
+  badgeStyle: StyleValue
+}
+
+interface FamilyRank {
+  family: string
+  count: number
+  firstIndex: number
 }
 
 const router = useRouter()
@@ -375,32 +332,6 @@ const dateFilterOptions: { label: string; value: DateFilter }[] = [
   { label: 'Ce mois-ci', value: 'month' },
   { label: 'Dates', value: 'custom' },
 ]
-
-const feelingFamilyIcons: Record<string, JournalIcon> = {
-  Affection: 'heart',
-  Sérénité: 'wave',
-  Joie: 'sun',
-  Intérêt: 'spark',
-  Energie: 'spark',
-  Énergie: 'spark',
-  Peur: 'shield',
-  Colère: 'spark',
-  Tristesse: 'drop',
-  Confusion: 'spiral',
-  Fatigue: 'moon',
-  Sidération: 'pause',
-  Tension: 'anchor',
-}
-
-const needFamilyIcons: Record<string, JournalIcon> = {
-  Survie: 'shield',
-  Intégrité: 'anchor',
-  Réalisation: 'spark',
-  Harmonie: 'balance',
-  Relation: 'heart',
-  Coopération: 'bridge',
-  Célébration: 'sun',
-}
 
 const sortAlphabetically = (values: string[]) =>
   [...values].sort((first, second) => first.localeCompare(second, 'fr'))
@@ -559,31 +490,67 @@ const matchesDateFilter = (pauseItem: PauseResponse) => {
 }
 
 const getPauseVisual = (pauseItem: PauseResponse): PauseVisual => {
-  const firstFeelingFamily = pauseItem.feelings[0]?.family
+  const predominantNeedFamily = getFirstPredominantFamily(
+    pauseItem.needs.map((need) => need.family),
+  )
 
-  if (firstFeelingFamily) {
-    return {
-      icon: feelingFamilyIcons[firstFeelingFamily] ?? 'spark',
-      label: firstFeelingFamily,
-      badgeClass: 'bg-[#ffd8c7] text-warning',
-    }
-  }
-
-  const firstNeedFamily = pauseItem.needs[0]?.family
-
-  if (firstNeedFamily) {
-    return {
-      icon: needFamilyIcons[firstNeedFamily] ?? 'leaf',
-      label: firstNeedFamily,
-      badgeClass: 'bg-[#e7ebc9] text-[#5f6f23]',
-    }
-  }
+  const iconComponent = predominantNeedFamily
+    ? (journalNeedIconComponents[predominantNeedFamily] ?? defaultJournalNeedIconComponent)
+    : defaultJournalNeedIconComponent
 
   return {
-    icon: 'pause',
-    label: 'Pause',
-    badgeClass: 'bg-brand-primary-hover text-black',
+    iconComponent,
+    label: predominantNeedFamily ? `Besoin prédominant : ${predominantNeedFamily}` : 'Pause',
+    badgeStyle: getFeelingBackgroundStyle(pauseItem.feelings.map((feeling) => feeling.family)),
   }
+}
+
+const getFeelingBackgroundStyle = (families: string[]): StyleValue => {
+  const predominantFamilies = getPredominantFamilies(families)
+  const firstFamily = predominantFamilies[0]?.family
+
+  if (!firstFamily) {
+    return { backgroundColor: defaultJournalFeelingColor }
+  }
+
+  const firstColor = journalFeelingColors[firstFamily] ?? defaultJournalFeelingColor
+  const secondFamily = predominantFamilies[1]?.family
+
+  if (!secondFamily || predominantFamilies[1]?.count !== predominantFamilies[0].count) {
+    return { backgroundColor: firstColor }
+  }
+
+  const secondColor = journalFeelingColors[secondFamily] ?? defaultJournalFeelingColor
+
+  return {
+    background: `linear-gradient(135deg, ${firstColor} 0%, ${secondColor} 100%)`,
+  }
+}
+
+const getFirstPredominantFamily = (families: string[]) =>
+  getPredominantFamilies(families)[0]?.family
+
+const getPredominantFamilies = (families: string[]): FamilyRank[] => {
+  const familyRanks = new Map<string, FamilyRank>()
+
+  families.forEach((family, index) => {
+    const rank = familyRanks.get(family)
+
+    if (rank) {
+      rank.count += 1
+      return
+    }
+
+    familyRanks.set(family, {
+      family,
+      count: 1,
+      firstIndex: index,
+    })
+  })
+
+  return [...familyRanks.values()].sort(
+    (first, second) => second.count - first.count || first.firstIndex - second.firstIndex,
+  )
 }
 
 const formatPauseTime = (date: string) =>
