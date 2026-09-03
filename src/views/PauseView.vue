@@ -11,7 +11,7 @@
           v-model="draft.title"
           type="text"
           :placeholder="defaultTitle"
-          class="w-full rounded-card bg-white/80 px-4 py-3 text-sm font-semibold placeholder:text-black/70 focus-visible:outline-1 focus-visible:outline-black"
+          class="w-full rounded-card border-b border-transparent bg-white/80 px-4 py-3 text-sm font-semibold outline-none placeholder:text-black/70 focus-visible:border-b-2 focus-visible:border-brand-primary"
           @blur="stopEditingTitle"
           @keydown.enter="stopEditingTitle"
         />

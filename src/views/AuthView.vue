@@ -1,6 +1,13 @@
 <template>
   <AppLayout :bg-image="isLogin ? loginBg : registerBg">
     <div class="flex flex-col justify-between">
+      <p
+        v-if="hasExpiredSession"
+        role="alert"
+        class="mt-5 rounded-card bg-white px-5 py-4 text-center text-sm shadow"
+      >
+        Ta session a expiré. Reconnecte-toi pour accéder à ton compte.
+      </p>
       <div class="flex py-10 text-sm">
         <button
           :class="isLogin ? 'bg-brand-primary font-bold' : 'bg-white'"
@@ -38,4 +45,5 @@ const route = useRoute()
 const router = useRouter()
 
 const isLogin = computed(() => route.name === 'login')
+const hasExpiredSession = computed(() => isLogin.value && route.query.reason === 'session-expired')
 </script>

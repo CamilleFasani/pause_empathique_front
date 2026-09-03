@@ -4,7 +4,16 @@
     <nav>
       <ul class="space-y-4">
         <li>Qu'est-ce que c'est ?</li>
-        <li>Mon compte</li>
+        <li>
+          <RouterLink
+            v-if="authStore.isAuthenticated"
+            :to="{ name: 'account' }"
+            class="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          >
+            Mon compte
+          </RouterLink>
+          <span v-else>Mon compte</span>
+        </li>
         <li>Faire une pause ?</li>
         <li>Mon Journal</li>
         <li>Ressources</li>
