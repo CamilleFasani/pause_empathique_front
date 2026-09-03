@@ -14,6 +14,7 @@
     />
     <button
       v-if="authStore.isAuthenticated"
+      ref="accountMenuButton"
       type="button"
       aria-label="Ouvrir le menu du compte"
       aria-controls="account-menu"
@@ -26,10 +27,17 @@
     <nav
       v-if="authStore.isAuthenticated && isAccountMenuOpen"
       id="account-menu"
+      ref="accountMenu"
       aria-label="Menu du compte"
       class="absolute top-full right-4 z-20 w-48 overflow-hidden rounded-btn bg-white shadow-lg"
     >
-      <a href="#" class="block px-5 py-3 active:bg-bg-page" @click.prevent> Mon compte </a>
+      <RouterLink
+        :to="{ name: 'account' }"
+        class="block px-5 py-3 active:bg-bg-page"
+        @click="isAccountMenuOpen = false"
+      >
+        Mon compte
+      </RouterLink>
       <button
         type="button"
         class="block w-full text-left border-t border-black/10 px-5 py-3 active:bg-bg-page"
@@ -41,7 +49,7 @@
   </header>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import logoSrc from '../assets/logo.png'
 import UserIcon from '../assets/user.svg'
 import MenuIcon from '../assets/menu.svg'
@@ -59,10 +67,30 @@ withDefaults(
 
 const authStore = useAuthStore()
 const isAccountMenuOpen = ref(false)
+const accountMenuButton = ref<HTMLButtonElement | null>(null)
+const accountMenu = ref<HTMLElement | null>(null)
+
+const closeAccountMenuOnOutsideClick = (event: PointerEvent) => {
+  const target = event.target
+
+  if (
+    !isAccountMenuOpen.value ||
+    !(target instanceof Node) ||
+    accountMenuButton.value?.contains(target) ||
+    accountMenu.value?.contains(target)
+  ) {
+    return
+  }
+
+  isAccountMenuOpen.value = false
+}
 
 const logout = async () => {
   await authStore.logout()
   isAccountMenuOpen.value = false
   await router.push({ name: 'welcome' })
 }
+
+onMounted(() => document.addEventListener('pointerdown', closeAccountMenuOnOutsideClick))
+onBeforeUnmount(() => document.removeEventListener('pointerdown', closeAccountMenuOnOutsideClick))
 </script>

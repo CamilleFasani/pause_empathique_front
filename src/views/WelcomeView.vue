@@ -1,6 +1,13 @@
 <template>
   <AppLayout :bg-image="welcomeBg">
     <div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+      <p
+        v-if="wasAccountDeleted"
+        role="status"
+        class="absolute top-5 left-1/2 z-20 w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 rounded-card bg-white px-5 py-4 text-center text-sm shadow-lg"
+      >
+        Ton compte et toutes les pauses associées ont bien été supprimés.
+      </p>
       <div class="relative z-10 flex flex-col items-center gap-0">
         <img :src="logoNameSrc" alt="Pause Empathique" class="w-52" />
         <EmpathicPath />
@@ -67,7 +74,7 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AppLayout from '../layouts/AppLayout.vue'
 import EmpathicPath from '../components/EmpathicPath.vue'
 import WelcomeChoiceButton from '../components/WelcomeChoiceButton.vue'
@@ -79,6 +86,7 @@ import { useAuthStore } from '../stores/auth'
 import { usePracticeStore } from '../stores/practice'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const practiceStore = usePracticeStore()
 const { isAuthenticated } = storeToRefs(authStore)
@@ -86,6 +94,7 @@ const { anonymousGender, setAnonymousGender } = useGender()
 const isGenderModalOpen = ref(false)
 const firstGenderButton = ref<HTMLButtonElement | null>(null)
 const genderModalTitleId = 'anonymous-gender-title'
+const wasAccountDeleted = route.query.status === 'account-deleted'
 
 const startAnonymousPractice = () => {
   if (!isAuthenticated.value && !anonymousGender.value) {

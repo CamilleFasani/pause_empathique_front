@@ -11,7 +11,7 @@
       required
       :aria-invalid="Boolean(fieldErrors.firstname)"
       aria-describedby="firstname-error"
-      class="mb-6 border-b border-black"
+      class="mb-6 border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
     />
     <p v-if="fieldErrors.firstname" id="firstname-error" class="-mt-5 mb-3 text-sm text-red-700">
       {{ fieldErrors.firstname }}
@@ -27,7 +27,7 @@
       required
       :aria-invalid="Boolean(fieldErrors.email)"
       aria-describedby="email-error"
-      class="mb-6 border-b border-black"
+      class="mb-6 border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
     />
     <p v-if="fieldErrors.email" id="email-error" class="-mt-5 mb-3 text-sm text-red-700">
       {{ fieldErrors.email }}
@@ -45,7 +45,7 @@
         minlength="8"
         :aria-invalid="Boolean(fieldErrors.password)"
         aria-describedby="password-error"
-        class="w-full mb-6 border-b border-black"
+        class="mb-6 w-full border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
       />
       <button
         type="button"
@@ -75,7 +75,7 @@
         minlength="8"
         :aria-invalid="Boolean(fieldErrors.passwordConfirmation)"
         aria-describedby="password-confirmation-error"
-        class="w-full border-b border-black mb-6"
+        class="mb-6 w-full border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
       />
     </div>
     <p

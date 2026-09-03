@@ -11,7 +11,7 @@
       required
       :aria-invalid="Boolean(fieldErrors.email)"
       aria-describedby="email-error"
-      class="border-b border-black mb-8"
+      class="mb-8 border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
     />
     <p v-if="fieldErrors.email" id="email-error" class="-mt-5 mb-3 text-sm text-red-700">
       {{ fieldErrors.email }}
@@ -27,7 +27,7 @@
         required
         :aria-invalid="Boolean(fieldErrors.password)"
         aria-describedby="password-error"
-        class="w-full border-b border-black mb-8"
+        class="mb-8 w-full border-b border-black outline-none focus-visible:border-b-2 focus-visible:border-brand-primary"
       />
       <button
         type="button"

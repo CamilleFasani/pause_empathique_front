@@ -1,24 +1,28 @@
 /**
  * Conserve l'état d'authentification partagé par l'application.
- * Orchestre l'inscription, la connexion, la restauration de session
- * et la déconnexion, puis relie cet état au client HTTP.
+ * Orchestre l'inscription, la connexion, la restauration de session et la
+ * déconnexion, ainsi que le chargement, la modification et la suppression du
+ * compte, puis maintient le profil local en cohérence avec le client HTTP.
  */
 import { defineStore } from 'pinia'
 
 import {
+  deleteCurrentUser,
   getCurrentUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
   registerUser,
+  updateCurrentUser,
   type Gender,
   type LoginPayload,
   type RegisterPayload,
+  type UpdateProfilePayload,
   type UserProfile,
 } from '../api/auth'
 import { configureAuthInterceptors } from '../api/client'
 
-export type { Gender, LoginPayload, RegisterPayload }
+export type { Gender, LoginPayload, RegisterPayload, UpdateProfilePayload }
 
 let areAuthInterceptorsConfigured = false
 let initializeSessionPromise: Promise<void> | null = null
@@ -70,6 +74,18 @@ export const useAuthStore = defineStore('auth', {
     async setSession(accessToken: string) {
       this.setAccessToken(accessToken)
       this.user = await getCurrentUser()
+    },
+    async fetchProfile() {
+      this.user = await getCurrentUser()
+      return this.user
+    },
+    async updateProfile(payload: UpdateProfilePayload) {
+      this.user = await updateCurrentUser(payload)
+      return this.user
+    },
+    async deleteAccount() {
+      await deleteCurrentUser()
+      this.clearSession()
     },
     clearSession() {
       this.user = null

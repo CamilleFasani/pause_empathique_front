@@ -18,6 +18,7 @@ import NeedsView from '../views/NeedsView.vue'
 import PauseView from '../views/PauseView.vue'
 import DiaryView from '../views/DiaryView.vue'
 import PauseDetailView from '../views/PauseDetailView.vue'
+import AccountView from '../views/AccountView.vue'
 
 const routes = [
   { path: '/', name: 'welcome', component: WelcomeView },
@@ -45,6 +46,7 @@ const routes = [
   { path: '/needs', name: 'needs', component: NeedsView, meta: { requiresPractice: true } },
   { path: '/pause', name: 'pause', component: PauseView, meta: { requiresPractice: true } },
   { path: '/diary', name: 'diary', component: DiaryView, meta: { requiresAuth: true } },
+  { path: '/account', name: 'account', component: AccountView, meta: { requiresAuth: true } },
   {
     path: '/diary/:id',
     name: 'pause-detail',
