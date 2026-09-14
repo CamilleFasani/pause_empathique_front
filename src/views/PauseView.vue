@@ -232,7 +232,6 @@ const saveAuthenticatedPause = async () => {
   }
 
   try {
-    practiceStore.continueAuthenticated()
     await practiceStore.submitAuthenticatedPause()
     await router.push({ name: 'home' })
   } catch {

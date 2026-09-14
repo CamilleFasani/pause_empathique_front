@@ -1,6 +1,6 @@
 /**
  * Conserve l'état du parcours de pratique partagé par l'application.
- * Gère le brouillon en cours, le mode anonyme ou authentifié,
+ * Gère le démarrage du parcours et le brouillon en cours,
  * les sélections de sentiments et besoins, puis orchestre la soumission.
  */
 import { defineStore } from 'pinia'
@@ -11,8 +11,7 @@ import {
   type PauseCreatePayload,
   type PauseResponse,
 } from '../api/practice'
-
-export type PracticeMode = 'anonymous' | 'authenticated'
+import { useAuthStore } from './auth'
 
 export interface PracticeDraft {
   title: string
@@ -23,7 +22,7 @@ export interface PracticeDraft {
 }
 
 export interface PracticeState {
-  mode: PracticeMode | null
+  hasStarted: boolean
   draft: PracticeDraft
   isSubmitting: boolean
   error: string | null
@@ -40,7 +39,7 @@ const createEmptyDraft = (): PracticeDraft => ({
 
 export const usePracticeStore = defineStore('practice', {
   state: (): PracticeState => ({
-    mode: null,
+    hasStarted: false,
     draft: createEmptyDraft(),
     isSubmitting: false,
     error: null,
@@ -48,28 +47,26 @@ export const usePracticeStore = defineStore('practice', {
   }),
 
   getters: {
-    hasStarted: (state) => state.mode !== null,
     hasDraftData: (state) =>
       Boolean(
         state.draft.emptyYourBag.trim() ||
-          state.draft.observation.trim() ||
-          state.draft.feelingIds.length > 0 ||
-          state.draft.needIds.length > 0,
+        state.draft.observation.trim() ||
+        state.draft.feelingIds.length > 0 ||
+        state.draft.needIds.length > 0,
       ),
-    canSubmit: (state) =>
-      state.draft.feelingIds.length > 0 && state.draft.needIds.length > 0,
+    canSubmit: (state) => state.draft.feelingIds.length > 0 && state.draft.needIds.length > 0,
   },
 
   actions: {
-    start(mode: PracticeMode) {
-      this.mode = mode
+    start() {
+      this.hasStarted = true
       this.draft = createEmptyDraft()
       this.error = null
       this.resumeAfterAuthentication = false
     },
 
     reset() {
-      this.mode = null
+      this.hasStarted = false
       this.draft = createEmptyDraft()
       this.isSubmitting = false
       this.error = null
@@ -88,12 +85,6 @@ export const usePracticeStore = defineStore('practice', {
       this.resumeAfterAuthentication = true
     },
 
-    continueAuthenticated() {
-      this.mode = 'authenticated'
-      this.error = null
-      this.resumeAfterAuthentication = false
-    },
-
     toPausePayload(): PauseCreatePayload {
       return {
         title: this.draft.title.trim() || undefined,
@@ -105,8 +96,13 @@ export const usePracticeStore = defineStore('practice', {
     },
 
     async submitAuthenticatedPause(): Promise<PauseResponse> {
-      if (this.mode !== 'authenticated') {
-        this.error = "Cette pause n'est pas dans un parcours authentifié."
+      if (!this.hasStarted) {
+        this.error = "Aucune pratique n'est en cours."
+        throw new Error(this.error)
+      }
+
+      if (!useAuthStore().isAuthenticated) {
+        this.error = 'Connecte-toi pour enregistrer ta pause.'
         throw new Error(this.error)
       }
 
@@ -117,6 +113,7 @@ export const usePracticeStore = defineStore('practice', {
 
       this.isSubmitting = true
       this.error = null
+      this.resumeAfterAuthentication = false
 
       try {
         const pause = await createPause(this.toPausePayload())
@@ -131,8 +128,13 @@ export const usePracticeStore = defineStore('practice', {
     },
 
     async submitAnonymousPractice(): Promise<void> {
-      if (this.mode !== 'anonymous') {
-        this.error = "Cette pause n'est pas dans un parcours anonyme."
+      if (!this.hasStarted) {
+        this.error = "Aucune pratique n'est en cours."
+        throw new Error(this.error)
+      }
+
+      if (useAuthStore().isAuthenticated) {
+        this.error = 'Le comptage anonyme est réservé aux personnes non connectées.'
         throw new Error(this.error)
       }
 
