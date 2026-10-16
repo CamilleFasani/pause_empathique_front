@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
 import { countAnonymousPractice, createPause, type PauseResponse } from '../api/practice'
+import { useAuthStore } from './auth'
 import { usePracticeStore } from './practice'
 
 vi.mock('../api/practice', () => ({
@@ -28,6 +29,91 @@ describe('practice store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
+  })
+
+  it('démarre une pratique vide sans dépendre de la connexion', () => {
+    const store = usePracticeStore()
+
+    expect(store.hasStarted).toBe(false)
+    store.start()
+    expect(store.hasStarted).toBe(true)
+    expect(store.hasDraftData).toBe(false)
+
+    store.draft.observation = 'Ancien brouillon'
+    store.prepareAuthentication()
+    useAuthStore().setAccessToken('access-token')
+    store.start()
+
+    expect(store.hasStarted).toBe(true)
+    expect(store.hasDraftData).toBe(false)
+    expect(store.resumeAfterAuthentication).toBe(false)
+  })
+
+  it.each(['submitAuthenticatedPause', 'submitAnonymousPractice'] as const)(
+    'refuse %s sans pratique démarrée',
+    async (action) => {
+      const store = usePracticeStore()
+      if (action === 'submitAuthenticatedPause') {
+        useAuthStore().setAccessToken('access-token')
+      }
+      store.toggleFeeling(12)
+      store.toggleNeed(34)
+
+      await expect(store[action]()).rejects.toThrow("Aucune pratique n'est en cours.")
+
+      expect(createPause).not.toHaveBeenCalled()
+      expect(countAnonymousPractice).not.toHaveBeenCalled()
+      expect(store.isSubmitting).toBe(false)
+    },
+  )
+
+  it('refuse un enregistrement après expiration de la session sans perdre le brouillon', async () => {
+    const authStore = useAuthStore()
+    authStore.setAccessToken('access-token')
+    const store = usePracticeStore()
+    store.start()
+    store.toggleFeeling(12)
+    store.toggleNeed(34)
+
+    authStore.clearSession()
+
+    await expect(store.submitAuthenticatedPause()).rejects.toThrow(
+      'Connecte-toi pour enregistrer ta pause.',
+    )
+    expect(createPause).not.toHaveBeenCalled()
+    expect(store.hasStarted).toBe(true)
+    expect(store.draft.feelingIds).toEqual([12])
+    expect(store.draft.needIds).toEqual([34])
+    expect(store.isSubmitting).toBe(false)
+  })
+
+  it('refuse le comptage anonyme après connexion sans perdre le brouillon', async () => {
+    const store = usePracticeStore()
+    store.start()
+    store.draft.observation = 'Observation'
+    useAuthStore().setAccessToken('access-token')
+
+    await expect(store.submitAnonymousPractice()).rejects.toThrow(
+      'Le comptage anonyme est réservé aux personnes non connectées.',
+    )
+    expect(countAnonymousPractice).not.toHaveBeenCalled()
+    expect(store.hasStarted).toBe(true)
+    expect(store.draft.observation).toBe('Observation')
+    expect(store.isSubmitting).toBe(false)
+  })
+
+  it('refuse une pause incomplète même lorsque la session est authentifiée', async () => {
+    useAuthStore().setAccessToken('access-token')
+    const store = usePracticeStore()
+    store.start()
+    store.toggleFeeling(12)
+
+    await expect(store.submitAuthenticatedPause()).rejects.toThrow(
+      'Sélectionne au moins un sentiment et un besoin.',
+    )
+    expect(createPause).not.toHaveBeenCalled()
+    expect(store.hasStarted).toBe(true)
+    expect(store.isSubmitting).toBe(false)
   })
 
   it('ajoute puis retire les sentiments et besoins sélectionnés', () => {
@@ -58,7 +144,7 @@ describe('practice store', () => {
     expect(store.canSubmit).toBe(true)
   })
 
-  it("détecte un brouillon utile sans tenir compte du titre", () => {
+  it('détecte un brouillon utile sans tenir compte du titre', () => {
     const store = usePracticeStore()
 
     expect(store.hasDraftData).toBe(false)
@@ -85,7 +171,7 @@ describe('practice store', () => {
   it("réinitialise l'état de pratique", () => {
     const store = usePracticeStore()
 
-    store.start('anonymous')
+    store.start()
     store.draft.emptyYourBag = 'Texte déposé'
     store.toggleFeeling(12)
     store.toggleNeed(34)
@@ -95,7 +181,7 @@ describe('practice store', () => {
 
     store.reset()
 
-    expect(store.mode).toBeNull()
+    expect(store.hasStarted).toBe(false)
     expect(store.draft).toEqual({
       title: '',
       emptyYourBag: '',
@@ -108,27 +194,43 @@ describe('practice store', () => {
     expect(store.resumeAfterAuthentication).toBe(false)
   })
 
-  it("gère la reprise d'un brouillon après authentification", () => {
+  it('conserve le brouillon au passage à une session authentifiée puis permet son enregistrement', async () => {
+    vi.mocked(createPause).mockResolvedValue(mockPause)
     const store = usePracticeStore()
 
-    store.start('anonymous')
-    store.error = 'Erreur précédente'
+    store.start()
+    store.draft.observation = 'Observation conservée'
+    store.toggleFeeling(12)
+    store.toggleNeed(34)
     store.prepareAuthentication()
 
+    useAuthStore().setAccessToken('access-token')
+
+    expect(store.hasStarted).toBe(true)
     expect(store.resumeAfterAuthentication).toBe(true)
+    expect(store.draft.observation).toBe('Observation conservée')
+    expect(createPause).not.toHaveBeenCalled()
 
-    store.continueAuthenticated()
+    await store.submitAuthenticatedPause()
 
-    expect(store.mode).toBe('authenticated')
-    expect(store.error).toBeNull()
+    expect(createPause).toHaveBeenCalledWith({
+      title: undefined,
+      empty_your_bag: undefined,
+      observation: 'Observation conservée',
+      feelings: [12],
+      needs: [34],
+    })
     expect(store.resumeAfterAuthentication).toBe(false)
+    expect(store.hasStarted).toBe(false)
+    expect(countAnonymousPractice).not.toHaveBeenCalled()
   })
 
   it('soumet une pause authentifiée puis réinitialise le brouillon', async () => {
     vi.mocked(createPause).mockResolvedValue(mockPause)
     const store = usePracticeStore()
 
-    store.start('authenticated')
+    useAuthStore().setAccessToken('access-token')
+    store.start()
     store.draft.emptyYourBag = '  Texte déposé  '
     store.draft.observation = '  Observation  '
     store.toggleFeeling(12)
@@ -143,25 +245,29 @@ describe('practice store', () => {
       feelings: [12],
       needs: [34],
     })
-    expect(store.mode).toBeNull()
+    expect(store.hasStarted).toBe(false)
     expect(store.hasDraftData).toBe(false)
     expect(store.isSubmitting).toBe(false)
   })
 
-  it("conserve le brouillon si la soumission authentifiée échoue", async () => {
+  it('conserve le brouillon si la soumission authentifiée échoue', async () => {
     const apiError = new Error('API indisponible')
 
     vi.mocked(createPause).mockRejectedValue(apiError)
     const store = usePracticeStore()
 
-    store.start('authenticated')
+    useAuthStore().setAccessToken('access-token')
+    store.start()
     store.draft.emptyYourBag = 'Texte déposé'
     store.toggleFeeling(12)
     store.toggleNeed(34)
 
+    store.prepareAuthentication()
+
     await expect(store.submitAuthenticatedPause()).rejects.toBe(apiError)
 
-    expect(store.mode).toBe('authenticated')
+    expect(store.hasStarted).toBe(true)
+    expect(store.resumeAfterAuthentication).toBe(false)
     expect(store.draft.emptyYourBag).toBe('Texte déposé')
     expect(store.draft.feelingIds).toEqual([12])
     expect(store.draft.needIds).toEqual([34])
@@ -173,29 +279,29 @@ describe('practice store', () => {
     vi.mocked(countAnonymousPractice).mockResolvedValue()
     const store = usePracticeStore()
 
-    store.start('anonymous')
+    store.start()
     store.draft.observation = 'Observation'
 
     await expect(store.submitAnonymousPractice()).resolves.toBeUndefined()
 
     expect(countAnonymousPractice).toHaveBeenCalledOnce()
-    expect(store.mode).toBeNull()
+    expect(store.hasStarted).toBe(false)
     expect(store.hasDraftData).toBe(false)
     expect(store.isSubmitting).toBe(false)
   })
 
-  it("conserve le brouillon si la soumission anonyme échoue", async () => {
+  it('conserve le brouillon si la soumission anonyme échoue', async () => {
     const apiError = new Error('API indisponible')
 
     vi.mocked(countAnonymousPractice).mockRejectedValue(apiError)
     const store = usePracticeStore()
 
-    store.start('anonymous')
+    store.start()
     store.draft.observation = 'Observation'
 
     await expect(store.submitAnonymousPractice()).rejects.toBe(apiError)
 
-    expect(store.mode).toBe('anonymous')
+    expect(store.hasStarted).toBe(true)
     expect(store.draft.observation).toBe('Observation')
     expect(store.error).toBe("La pratique n'a pas pu être finalisée. Merci de réessayer.")
     expect(store.isSubmitting).toBe(false)

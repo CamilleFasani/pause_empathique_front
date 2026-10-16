@@ -234,7 +234,7 @@ const deleteCurrentPause = async () => {
 }
 
 const startPractice = async () => {
-  practiceStore.start('authenticated')
+  practiceStore.start()
   await router.push({ name: 'empty-your-bag' })
 }
 

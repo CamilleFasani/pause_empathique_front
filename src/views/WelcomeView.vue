@@ -103,14 +103,14 @@ const startAnonymousPractice = () => {
     return
   }
 
-  practiceStore.start('anonymous')
+  practiceStore.start()
   router.push({ name: 'empty-your-bag' })
 }
 
 const chooseAnonymousGender = (gender: Gender) => {
   setAnonymousGender(gender)
   isGenderModalOpen.value = false
-  practiceStore.start('anonymous')
+  practiceStore.start()
   router.push({ name: 'empty-your-bag' })
 }
 
